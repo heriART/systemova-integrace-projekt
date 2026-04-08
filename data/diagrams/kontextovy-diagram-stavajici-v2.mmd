@@ -1,0 +1,43 @@
+---
+title: "Kontextový diagram – stávající situace Aurora Hotels a.s."
+---
+flowchart LR
+    Host["Host\n(individuální / firemní)"]
+    OTA["OTA kanály\n(Booking.com, Expedia)"]
+    ChM["Channel Manager\n(SiteMinder)"]
+    Web["Webové stránky\nAurora Hotels"]
+    Firmy["Firemní klienti"]
+    Ucetni["Účetní systém\n(Money S5)"]
+    FU["Finanční úřad"]
+    Vedeni["Vedení společnosti"]
+
+    IS(("IS\nAurora Hotels a.s."))
+
+    Host -- "Osobní údaje,\npožadavky na rezervaci" --> IS
+    IS -. "Potvrzení rezervace,\nvyúčtování" .-> Host
+
+    OTA -- "Online rezervace" --> ChM
+    ChM -. "Dostupnost pokojů,\nceny" .-> OTA
+    ChM -- "Přijaté online\nrezervace" --> IS
+
+    Web -- "Webové rezervace" --> IS
+    IS -. "Informace\no dostupnosti" .-> Web
+
+    Firmy -- "Poptávky na konference,\nfiremní akce" --> IS
+    IS -. "Cenové nabídky,\npotvrzení akcí" .-> Firmy
+
+    IS -- "Fakturační data\n(manuální export)" --> Ucetni
+    Ucetni -- "Daňová přiznání,\núčetní výkazy" --> FU
+
+    Vedeni -- "Požadavky\nna reporty" --> IS
+    IS -. "Ad-hoc sestavy\n(Excel)" .-> Vedeni
+
+    style IS fill:#dae8fc,stroke:#6c8ebf,stroke-width:3px,font-weight:bold,font-size:14px
+    style Host fill:#fff2cc,stroke:#d6b656
+    style OTA fill:#fff2cc,stroke:#d6b656
+    style ChM fill:#fff2cc,stroke:#d6b656
+    style Web fill:#fff2cc,stroke:#d6b656
+    style Firmy fill:#fff2cc,stroke:#d6b656
+    style Ucetni fill:#fff2cc,stroke:#d6b656
+    style FU fill:#fff2cc,stroke:#d6b656
+    style Vedeni fill:#fff2cc,stroke:#d6b656
