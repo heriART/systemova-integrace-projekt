@@ -174,15 +174,248 @@ Seyfor na svých stránkách zveřejňuje případové studie projektů postaven
 
 # 
 
-4. # **Petr Globální strategie zadavatelského podniku (východiska, globální cíle podniku, stručná SWOT analýza, portfolio produktů, …).** {#petr-globální-strategie-zadavatelského-podniku-(východiska,-globální-cíle-podniku,-stručná-swot-analýza,-portfolio-produktů,-…).}
+4. # **Globální strategie zadavatelského podniku** {#globální-strategie-zadavatelského-podniku}
 
-5. # **Petr Informační strategie podniku (východiska – stávající situace IS/IT, vztah IS k okolí – výchozí kontextový diagram (stávající situace), stanovení cílů, kritéria (dimenze), CSF (kritické faktory úspěchu)).** {#petr-informační-strategie-podniku-(východiska-–-stávající-situace-is/it,-vztah-is-k-okolí-–-výchozí-kontextový-diagram-(stávající-situace),-stanovení-cílů,-kritéria-(dimenze),-csf-(kritické-faktory-úspěchu)).}
+## **4.1 Východiska** {#4.1-východiska}
 
-6. # **Ondra Business architektura** {#ondra-business-architektura}
+Společnost Aurora Hotels a.s. působí na českém hotelovém trhu již přes 15 let a provozuje síť 7 hotelů ve větších městech České republiky (Praha, Brno, Ostrava, Plzeň, Olomouc, Liberec a České Budějovice). Podnik se zaměřuje na poskytování ubytovacích služeb pro individuální hosty i firemní klientelu, přičemž nabídku rozšiřuje o doplňkové služby – konferenční prostory, wellness, gastronomii a organizaci firemních akcí.
 
-   1. ## **Výběr a návrh podnikového procesu pro který bude integrován nový IS, modul nebo funkcionalita (BPMN)** {#výběr-a-návrh-podnikového-procesu-pro-který-bude-integrován-nový-is,-modul-nebo-funkcionalita-(bpmn)}
+V současné době podnik disponuje stabilní zákaznickou základnou a dosahuje ročního obratu 320 mil. Kč při 280 zaměstnancích. Řízení vztahů se zákazníky je však roztříštěné – jednotlivé hotely vedou evidenci hostů odděleně, marketingové kampaně nejsou koordinovány centrálně a neexistuje jednotný přehled o historii pobytů a preferencích hostů napříč celou sítí. Tento stav omezuje schopnost podniku efektivně cílit nabídky, budovat věrnostní programy a poskytovat konzistentní zákaznickou zkušenost.
 
-   2. ## **Katalog uživatelských požadavků – funkční, nefunkční (ve formě tabulky: číslo a název požadavku, popis požadavku, aktor, složitost, priorita, návaznost)** {#katalog-uživatelských-požadavků-–-funkční,-nefunkční-(ve-formě-tabulky:-číslo-a-název-požadavku,-popis-požadavku,-aktor,-složitost,-priorita,-návaznost)}
+Vedení společnosti proto rozhodlo o zavedení centrálního CRM systému Salesforce, který by sjednotil správu zákaznických dat, podpořil obchodní a marketingové procesy a posílil konkurenceschopnost celé hotelové sítě.
+
+## **4.2 Portfolio služeb** {#4.2-portfolio-služeb}
+
+Aurora Hotels a.s. nabízí svým zákazníkům následující služby:
+
+* **Ubytovací služby** – standardní a nadstandardní pokoje, apartmány, dlouhodobé pobyty
+* **Konferenční a kongresové služby** – pronájem konferenčních místností, technické zázemí, organizace firemních akcí a školení
+* **Gastronomické služby** – hotelové restaurace, snídaňové formáty, cateringové služby pro akce
+* **Wellness a relaxační služby** – wellness centra, sauny, fitness (dostupné ve vybraných hotelech)
+* **Doplňkové služby** – concierge, transfery, turistický servis, parkování
+
+Z hlediska integrace CRM systému je důležité, že portfolio služeb je široké a zákazníci mohou využívat různé kombinace služeb napříč jednotlivými hotely. Centrální evidence zákaznických preferencí a historie využití služeb umožní personalizovanější přístup a cílenější nabídky.
+
+## **4.3 Stanovení cílů** {#4.3-stanovení-cílů}
+
+Hlavním globálním cílem společnosti Aurora Hotels a.s. je **zvýšení tržeb a ziskovosti prostřednictvím zlepšení řízení vztahů se zákazníky a zvýšení míry opakovaných pobytů**. Tohoto cíle podnik plánuje dosáhnout pomocí následujících dílčích cílů:
+
+1. **Centralizace zákaznických dat** – sjednocení evidence hostů ze všech 7 hotelů do jednoho systému
+2. **Zvýšení míry opakovaných návštěv** – zavedení věrnostního programu založeného na datech z CRM
+3. **Zefektivnění marketingových kampaní** – cílení nabídek na základě segmentace zákazníků, historie pobytů a preferencí
+4. **Zlepšení zákaznické zkušenosti** – personalizace služeb díky dostupnosti kompletní historie hosta v celé síti
+5. **Zvýšení obsazenosti v mimosezónních obdobích** – využití CRM pro automatizované kampaně a speciální nabídky
+6. **Posílení firemní klientely** – systematická správa firemních kontaktů, smluv a poptávek konferenčních služeb
+
+## **4.4 SWOT analýza** {#4.4-swot-analýza}
+
+|  | **Pozitiva** | **Negativa** |
+| :---: | :--- | :--- |
+| **Vnitřní původ** | **Silné stránky** | **Slabé stránky** |
+|  | Stabilní zákaznická základna a dobré jméno | Roztříštěná evidence zákazníků napříč hotely |
+|  | Síť 7 hotelů ve strategických městech ČR | Absence centrálního CRM systému |
+|  | Široké portfolio služeb (ubytování, konference, wellness, gastronomie) | Nekoordinované marketingové aktivity |
+|  | Kvalifikovaný personál s dlouholetými zkušenostmi | Omezená schopnost vyhodnocovat zákaznická data |
+|  | Stabilní ekonomické výsledky | Nízká míra digitalizace zákaznických procesů |
+| **Vnější původ** | **Příležitosti** | **Hrozby** |
+|  | Rostoucí poptávka po personalizovaných službách v hotelnictví | Silná konkurence mezinárodních hotelových řetězců (Marriott, Hilton, Accor) |
+|  | Trend digitalizace a využívání CRM v pohostinství | Závislost na sezónnosti a výkyvech cestovního ruchu |
+|  | Růst firemního cestovního ruchu v ČR | Růst nákladů na energie a provoz |
+|  | Možnost využití dat pro cross-selling a up-selling služeb | Nedostatek kvalifikovaných pracovníků v hotelnictví |
+|  | Rozvoj online rezervačních kanálů a OTA platforem | Ekonomická nejistota a možný pokles poptávky |
+
+*Tabulka 3: SWOT analýza Aurora Hotels a.s.*
+
+## **4.5 Strategie naplnění cílů** {#4.5-strategie-naplnění-cílů}
+
+### **4.5.1 Centralizace zákaznických dat** {#4.5.1-centralizace-zákaznických-dat}
+
+Využití hodnocení W-O (slabé stránky × příležitosti). Současná roztříštěná evidence zákazníků brání efektivnímu využití rostoucí poptávky po personalizovaných službách. Zavedením CRM systému Salesforce dojde ke sjednocení zákaznických dat ze všech 7 hotelů do jedné centrální databáze. Každý host bude mít jednotný profil obsahující historii pobytů, preference, komunikační historii a využité služby bez ohledu na to, ve kterém hotelu sítě byl ubytován.
+
+### **4.5.2 Zvýšení míry opakovaných návštěv** {#4.5.2-zvýšení-míry-opakovaných-návštěv}
+
+Na základě centralizovaných dat bude možné vytvořit věrnostní program, který bude odměňovat opakované hosty napříč celou sítí. CRM umožní automaticky identifikovat segmenty zákazníků s vysokým potenciálem pro opakovanou návštěvu a cílit na ně personalizované nabídky (narozeninové slevy, sezónní balíčky, pozvánky na akce).
+
+### **4.5.3 Zefektivnění marketingových kampaní** {#4.5.3-zefektivnění-marketingových-kampaní}
+
+Využití hodnocení S-O (silné stránky × příležitosti). Díky širokému portfoliu služeb a stabilní zákaznické základně může podnik prostřednictvím Salesforce Marketing Cloud vytvářet segmentované kampaně na základě reálných dat – např. nabídky wellness pobytů zákazníkům, kteří v minulosti využili konferenčních služeb, nebo sezónní nabídky pro hosty z konkrétních regionů.
+
+### **4.5.4 Zlepšení zákaznické zkušenosti** {#4.5.4-zlepšení-zákaznické-zkušenosti}
+
+Personalizace služeb je klíčovým diferenciátorem vůči mezinárodním řetězcům. CRM systém umožní recepci a dalšímu personálu přistupovat k preferencím hosta (typ pokoje, stravovací požadavky, preferovaná patra) ještě před jeho příjezdem. Tím dojde ke zvýšení kvality služeb a spokojenosti zákazníků.
+
+### **4.5.5 Posílení firemní klientely** {#4.5.5-posílení-firemní-klientely}
+
+Využití hodnocení S-O (silné stránky × příležitosti). Firemní klientela tvoří významný podíl na tržbách. CRM systém umožní systematicky spravovat firemní kontakty, sledovat poptávky po konferenčních službách, evidovat firemní smlouvy a automaticky upozorňovat obchodní tým na příležitosti k rozšíření spolupráce (např. blížící se výročí smlouvy, nový firemní event).
+
+5. # **Informační strategie podniku** {#informační-strategie-podniku}
+
+## **5.1 Současný stav IS/IT** {#5.1-současný-stav-is-it}
+
+Společnost Aurora Hotels a.s. v současné době provozuje několik informačních systémů, které vznikaly postupně a nejsou vzájemně plně integrovány:
+
+* **Property Management System (PMS) – Horesplus** – hlavní provozní systém pro správu rezervací, check-in/check-out, přidělování pokojů a vyúčtování pobytů. Systém je nasazen v každém hotelu jako samostatná instance s lokální databází. Data mezi hotely nejsou sdílena v reálném čase.
+* **Účetní systém – Money S5** – centrální účetní systém pro celou společnost. Data z PMS jsou do účetního systému přenášena manuálním exportem/importem jednou denně.
+* **Rezervační systém (Channel Manager) – SiteMinder** – nástroj pro správu online rezervací z OTA kanálů (Booking.com, Expedia apod.) a vlastních webových stránek. Channel Manager komunikuje s PMS v jednotlivých hotelech, ale nepředává zákaznická data do žádného centrálního systému.
+* **E-mailový systém – Microsoft 365** – firemní e-mailová komunikace a kancelářské aplikace. Marketingové kampaně jsou rozesílány manuálně přes Outlook bez segmentace a vyhodnocování.
+* **Webové stránky** – prezentační web s možností online rezervace, která je napojena na Channel Manager. Web neobsahuje zákaznickou zónu ani věrnostní program.
+* **Interní sdílené tabulky (Excel)** – jednotlivé hotely vedou v tabulkách seznamy firemních klientů, VIP hostů a kontaktních osob. Tyto tabulky nejsou sdíleny ani centrálně spravovány.
+
+Hlavním problémem současného stavu je **absence centrálního CRM systému**. Zákaznická data jsou roztříštěna mezi PMS jednotlivých hotelů, Channel Manager, e-mailový systém a Excel tabulky. Neexistuje jednotný profil hosta, který by umožňoval sledovat historii pobytů a preferencí napříč celou sítí. Marketingové oddělení nemá přístup k uceleným zákaznickým datům a nemůže efektivně segmentovat a cílit nabídky.
+
+## **5.2 Vztah IS k okolí – výchozí kontextový diagram (stávající situace)** {#5.2-kontextový-diagram-stávající-situace}
+
+Kontextový diagram zachycuje stávající vztahy informačního systému Aurora Hotels a.s. k jeho okolí. IS podniku je zobrazen jako centrální prvek a kolem něj jsou uvedeny externí entity (aktéři), kteří s ním komunikují. Diagram ukazuje, jaké informační toky v současnosti existují.
+
+*Obrázek 2: Kontextový diagram – stávající situace*
+
+<!-- Diagram je dostupný v souboru data/diagrams/kontextovy-diagram-stavajici.drawio -->
+
+**Popis informačních toků ve stávající situaci:**
+
+| Tok | Od → Do | Popis |
+| :--- | :--- | :--- |
+| T1 | Host → PMS | Osobní údaje, požadavky na rezervaci, preference |
+| T2 | PMS → Host | Potvrzení rezervace, vyúčtování pobytu |
+| T3 | OTA kanály → Channel Manager | Online rezervace (Booking.com, Expedia) |
+| T4 | Channel Manager → OTA kanály | Dostupnost pokojů, ceny |
+| T5 | Channel Manager → PMS | Přijaté online rezervace |
+| T6 | PMS → Účetní systém | Fakturační data (manuální export) |
+| T7 | Účetní systém → Finanční úřad | Daňová přiznání, účetní výkazy |
+| T8 | Vedení společnosti → Excel tabulky | Požadavky na reporty |
+| T9 | Excel tabulky → Vedení společnosti | Ad-hoc sestavy o hostech a obsazenosti |
+| T10 | Marketing → Outlook | Manuální rozesílání kampaní |
+| T11 | Firemní klienti → Obchodní odd. | Poptávky na konference a firemní akce |
+| T12 | Obchodní odd. → Firemní klienti | Cenové nabídky (manuálně) |
+
+*Tabulka 4: Informační toky – stávající situace*
+
+## **5.3 Stanovení cílů informační strategie** {#5.3-stanovení-cílů-informační-strategie}
+
+Na základě analýzy stávajícího stavu IS/IT a globálních cílů podniku (kapitola 4) byly stanoveny následující cíle informační strategie:
+
+1. **Zavedení centrálního CRM systému Salesforce** – implementace cloudového CRM řešení, které bude sloužit jako jednotná platforma pro správu zákaznických dat, obchodních příležitostí a marketingových kampaní napříč celou hotelovou sítí.
+
+2. **Integrace CRM s PMS Horesplus** – propojení Salesforce s property management systémem tak, aby se zákaznická data (historie pobytů, preference, vyúčtování) automaticky synchronizovala do centrálního CRM. Tím odpadne potřeba manuální evidence v Excel tabulkách.
+
+3. **Integrace CRM s Channel Managerem SiteMinder** – napojení Salesforce na rezervační systém pro automatický přenos dat o online rezervacích do zákaznických profilů v CRM.
+
+4. **Nasazení Salesforce Marketing Cloud** – zavedení nástroje pro automatizované a segmentované marketingové kampaně na základě zákaznických dat z CRM (náhrada manuálního rozesílání přes Outlook).
+
+5. **Vytvoření centrální databáze hostů** – konsolidace zákaznických dat ze všech 7 hotelů do jednotných profilů s historií pobytů, preferencemi a komunikační historií.
+
+6. **Zavedení reportingového nástroje** – implementace Salesforce Reports & Dashboards pro vedení společnosti jako náhrada za ad-hoc Excel sestavy.
+
+**Vztah cílů informační strategie k dimenzím:**
+
+| Cíl | Procesní dimenze | Datová dimenze | Aplikační dimenze | Technologická dimenze |
+| :--- | :---: | :---: | :---: | :---: |
+| 1. Zavedení CRM Salesforce | ✓ | ✓ | ✓ | ✓ |
+| 2. Integrace CRM–PMS | ✓ | ✓ | ✓ |  |
+| 3. Integrace CRM–Channel Manager |  | ✓ | ✓ |  |
+| 4. Salesforce Marketing Cloud | ✓ | ✓ | ✓ |  |
+| 5. Centrální databáze hostů |  | ✓ |  | ✓ |
+| 6. Reportingový nástroj | ✓ | ✓ | ✓ |  |
+
+*Tabulka 5: Vztah cílů informační strategie k dimenzím EA*
+
+## **5.4 Kritické faktory úspěchu (CSF)** {#5.4-csf}
+
+Tabulka kritických faktorů úspěchu hodnotí klíčová kritéria, která musí být splněna pro úspěšnou realizaci integračního projektu.
+
+**Legenda:**
+* **Závažnost** – jak důležité je pro zadavatele dané kritérium (1–10; 10 = nejvyšší důležitost)
+* **Pravděpodobnost** – pravděpodobnost naplnění daného kritéria (1–5; 5 = nejvyšší pravděpodobnost)
+* **Míra ohrožení** – dopad na úspěšné dokončení projektu při nesplnění kritéria, hodnoceno integrátorem (1–5; 5 = nejvyšší míra ohrožení)
+
+| č. | Kritérium | Řízení projektu | Technický úspěch | Podnikový úspěch | Závažnost | Pravděpodobnost | Míra ohrožení |
+| :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| 1 | Včasné dodání projektu | ✓ |  |  | 8 | 3 | 3 |
+| 2 | Dodržení rozpočtu | ✓ |  |  | 9 | 3 | 4 |
+| 3 | Úspěšná migrace dat do CRM |  | ✓ |  | 10 | 2 | 5 |
+| 4 | Integrace CRM s PMS Horesplus |  | ✓ |  | 10 | 3 | 5 |
+| 5 | Integrace CRM s Channel Managerem |  | ✓ |  | 8 | 4 | 3 |
+| 6 | Použitelnost systému pro recepční a obchodníky |  | ✓ | ✓ | 9 | 4 | 4 |
+| 7 | Proškolení koncových uživatelů | ✓ | ✓ |  | 7 | 4 | 3 |
+| 8 | Zajištění bezpečnosti zákaznických dat (GDPR) |  | ✓ | ✓ | 10 | 4 | 5 |
+| 9 | Zvýšení míry opakovaných návštěv |  |  | ✓ | 7 | 2 | 2 |
+| 10 | Akceptace systému vedením hotelů | ✓ |  | ✓ | 8 | 3 | 4 |
+
+*Tabulka 6: Kritické faktory úspěchu (CSF)*
+
+Nejkritičtějšími faktory jsou **úspěšná migrace dat** (CSF 3), **integrace s PMS** (CSF 4) a **zajištění bezpečnosti dat** (CSF 8), které mají nejvyšší závažnost i míru ohrožení. Tyto faktory přímo ovlivňují, zda nový CRM systém bude schopen plnit svou funkci centrální zákaznické databáze a zda bude v souladu s požadavky GDPR.
+
+6. # **Business architektura** {#business-architektura}
+
+## **6.1 Výběr a návrh podnikového procesu (BPMN)** {#6.1-bpmn}
+
+Pro modelování byl zvolen proces **„Správa rezervace a check-in hosta"**, protože se jedná o klíčový podnikový proces, který přímo souvisí s integrací CRM systému Salesforce. Proces zahrnuje příjem rezervace, ověření dostupnosti, vytvoření/aktualizaci zákaznického profilu v CRM, samotný check-in a následnou post-pobytovou komunikaci. Právě tento proces nejlépe ilustruje přínos centrálního CRM – umožňuje personalizaci služeb na základě historie hosta a automatizované follow-up kampaně.
+
+**Popis procesu:**
+
+Proces začíná přijetím požadavku na rezervaci, který může přijít třemi kanály: přímo od hosta (telefon, e-mail), přes webové stránky nebo přes OTA kanál (Booking.com, Expedia). V případě online kanálů je rezervace automaticky přenesena přes Channel Manager do PMS.
+
+Po přijetí rezervace recepční ověří dostupnost pokoje v PMS. Pokud pokoj není dostupný, nabídne hostovi alternativní termín nebo typ pokoje. Po potvrzení dostupnosti systém vyhledá hosta v CRM Salesforce:
+
+* **Existující host** – CRM zobrazí jeho profil s historií pobytů, preferencemi a poznámkami z předchozích návštěv. Recepční může přizpůsobit nabídku (např. preferovaný typ pokoje, patro, speciální požadavky).
+* **Nový host** – v CRM je vytvořen nový zákaznický profil s kontaktními údaji a údaji o rezervaci.
+
+Následuje potvrzení rezervace hostovi a záznam do PMS. V den příjezdu probíhá check-in, při kterém recepční vidí v CRM kompletní profil hosta. Po ukončení pobytu (check-out) se údaje o pobytu synchronizují z PMS do CRM a systém automaticky spouští post-pobytovou komunikaci – poděkování, žádost o hodnocení a případná personalizovaná nabídka na další pobyt.
+
+**Účastníci procesu (BPMN lanes):**
+
+* **Host** – iniciátor procesu, příjemce služeb
+* **Recepce** – zpracování rezervace, check-in, check-out
+* **PMS Horesplus** – správa pokojů, dostupnost, vyúčtování
+* **CRM Salesforce** – zákaznický profil, historie, automatizované kampaně
+* **Channel Manager (SiteMinder)** – příjem online rezervací
+
+*Obrázek 3: BPMN diagram – Proces správy rezervace a check-in hosta*
+
+<!-- BPMN diagram je dostupný v souboru data/diagrams/bpmn-rezervace-checkin.bpmn -->
+<!-- Mermaid verze: data/diagrams/bpmn-rezervace-checkin.mmd -->
+
+## **6.2 Katalog uživatelských požadavků** {#6.2-katalog-požadavků}
+
+Katalog obsahuje funkční (F) a nefunkční (N) požadavky na integraci CRM systému Salesforce. Složitost je hodnocena na škále 1–10 (10 = nejvyšší složitost).
+
+### **Funkční požadavky**
+
+| č. | Název požadavku | Popis požadavku | Aktér | Složitost | Priorita | Návaznost |
+| :---: | :--- | :--- | :--- | :---: | :--- | :--- |
+| F01 | Vytvoření zákaznického profilu | CRM umožní vytvořit nový profil hosta s kontaktními údaji, preferencemi a souhlasem GDPR | Recepční | 3 | Vysoká | F02, F03 |
+| F02 | Zobrazení historie pobytů | CRM zobrazí kompletní historii pobytů hosta napříč všemi hotely sítě včetně využitých služeb | Recepční, Manažer | 5 | Vysoká | F01 |
+| F03 | Správa preferencí hosta | CRM umožní evidovat a upravovat preference hosta (typ pokoje, patro, stravování, speciální požadavky) | Recepční | 3 | Střední | F01 |
+| F04 | Vyhledávání hostů | CRM umožní vyhledávat hosty podle jména, e-mailu, telefonu, čísla věrnostní karty nebo firmy | Recepční, Obchodník | 2 | Vysoká | F01 |
+| F05 | Správa firemních kontaktů | CRM umožní evidovat firemní klienty, kontaktní osoby, rámcové smlouvy a historii firemních akcí | Obchodník | 5 | Vysoká | F06 |
+| F06 | Správa obchodních příležitostí | CRM umožní vytvářet a sledovat obchodní příležitosti (poptávky na konference, skupinové pobyty) včetně fází obchodního cyklu | Obchodník | 6 | Vysoká | F05 |
+| F07 | Segmentace zákazníků | CRM umožní segmentovat zákazníky podle zadaných kritérií (počet pobytů, celková útrata, typ klienta, region) | Marketing | 6 | Vysoká | F01, F02 |
+| F08 | Automatizované kampaně | Salesforce Marketing Cloud umožní vytvářet a spouštět automatizované e-mailové kampaně na základě segmentace a událostí (post-pobytový e-mail, narozeniny, sezónní nabídka) | Marketing | 7 | Střední | F07 |
+| F09 | Synchronizace dat CRM–PMS | Automatická obousměrná synchronizace dat mezi Salesforce a PMS Horesplus (rezervace, pobyty, vyúčtování) | IT správce | 8 | Kritická | F01, F02 |
+| F10 | Synchronizace dat CRM–Channel Manager | Automatický přenos dat o online rezervacích ze SiteMinder do zákaznických profilů v CRM | IT správce | 7 | Vysoká | F01, F09 |
+| F11 | Reporty a dashboardy | CRM poskytne předdefinované i vlastní reporty a dashboardy pro vedení (obsazenost, tržby, segmenty zákazníků, úspěšnost kampaní) | Manažer, Vedení | 5 | Střední | F02, F07 |
+| F12 | Věrnostní program | CRM umožní správu věrnostního programu – přidělování bodů, úrovní členství a čerpání odměn | Marketing, Recepční | 7 | Střední | F01, F02 |
+| F13 | Správa souhlasů GDPR | CRM umožní evidovat a spravovat souhlasy zákazníků se zpracováním osobních údajů a marketingovou komunikací | Recepční, IT správce | 4 | Kritická | F01 |
+| F14 | Záznam komunikace s hostem | CRM umožní zaznamenat veškerou komunikaci s hostem (e-maily, telefonáty, poznámky) do jeho profilu | Recepční, Obchodník | 4 | Střední | F01 |
+
+*Tabulka 7: Funkční požadavky*
+
+### **Nefunkční požadavky**
+
+| č. | Název požadavku | Popis požadavku | Aktér | Složitost | Priorita | Návaznost |
+| :---: | :--- | :--- | :--- | :---: | :--- | :--- |
+| N01 | Dostupnost systému | CRM musí být dostupné 99,9 % času (SLA Salesforce). Výpadek nesmí ovlivnit provoz PMS. | IT správce | 6 | Kritická | F09 |
+| N02 | Doba odezvy | Žádná operace v CRM (vyhledávání, zobrazení profilu) nesmí trvat déle než 3 sekundy | IT správce | 5 | Vysoká | — |
+| N03 | Zabezpečení dat | Systém musí splňovat požadavky GDPR, data musí být šifrována při přenosu (TLS 1.2+) i v úložišti (AES-256) | IT správce | 8 | Kritická | F13 |
+| N04 | Vícefaktorové ověření | Přihlášení do CRM musí vyžadovat vícefaktorové ověření (MFA) pro všechny uživatele | IT správce | 4 | Kritická | — |
+| N05 | Přístup přes webový prohlížeč | CRM musí být přístupné přes běžné webové prohlížeče (Chrome, Edge, Safari) bez nutnosti instalace klientské aplikace | IT správce | 2 | Vysoká | — |
+| N06 | Mobilní přístup | CRM musí být přístupné přes mobilní aplikaci Salesforce na zařízeních iOS a Android | Recepční, Obchodník | 3 | Střední | — |
+| N07 | Kapacita systému | CRM musí podporovat minimálně 100 souběžných uživatelů a evidenci alespoň 500 000 zákaznických záznamů | IT správce | 5 | Vysoká | — |
+| N08 | Integrace přes API | Integrace s PMS a Channel Managerem musí být realizována přes standardní REST API s garantovaným doručením zpráv | IT správce | 7 | Kritická | F09, F10 |
+| N09 | Zálohování dat | Zákaznická data musí být automaticky zálohována minimálně jednou denně s možností obnovy do 4 hodin (RTO) | IT správce | 5 | Vysoká | — |
+| N10 | Vícejazyčnost | Uživatelské rozhraní CRM musí být dostupné v českém a anglickém jazyce | IT správce | 2 | Nízká | — |
+
+*Tabulka 8: Nefunkční požadavky*
 
 7. # **Marek (kafonmar) \- Datová architektura – návrh nových informačních toků: 1\) nový kontextový diagram, 2\) DFD první úrovně (DFD) a 3\) návrh struktury databáze (ERD).** {#marek-(kafonmar)---datová-architektura-–-návrh-nových-informačních-toků:-1)-nový-kontextový-diagram,-2)-dfd-první-úrovně-(dfd)-a-3)-návrh-struktury-databáze-(erd).}
 

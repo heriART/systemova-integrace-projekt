@@ -1,0 +1,11 @@
+Kritérium;Závažnost;Pravděpodobnost;Míra ohrožení
+1. Včasné dodání projektu;8;3;3
+2. Dodržení rozpočtu;9;3;4
+3. Úspěšná migrace dat do CRM;10;2;5
+4. Integrace CRM s PMS Horesplus;10;3;5
+5. Integrace CRM s Channel Managerem;8;4;3
+6. Použitelnost systému;9;4;4
+7. Proškolení koncových uživatelů;7;4;3
+8. Bezpečnost zákaznických dat (GDPR);10;4;5
+9. Zvýšení míry opakovaných návštěv;7;2;2
+10. Akceptace systému vedením hotelů;8;3;4
