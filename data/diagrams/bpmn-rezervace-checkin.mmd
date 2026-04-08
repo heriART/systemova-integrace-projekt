@@ -1,0 +1,95 @@
+---
+title: "BPMN – Proces správy rezervace a check-in hosta"
+---
+flowchart TD
+    subgraph HOST["Host"]
+        H_Start(("Potřeba\nubytování"))
+        H_GW{"Způsob\nrezervace?"}
+        H_Pozadavek["Odeslání požadavku\nna rezervaci\n(telefon/e-mail)"]
+        H_Online["Vytvoření online\nrezervace (web/OTA)"]
+        H_Potvrzeni["Přijetí potvrzení\nrezervace"]
+        H_Checkin["Příjezd\na check-in"]
+        H_Pobyt["Pobyt\nv hotelu"]
+        H_Checkout["Check-out"]
+        H_Email["Přijetí post-pobytového\ne-mailu"]
+        H_End(("Konec"))
+
+        H_Start --> H_GW
+        H_GW -- "Přímý kontakt" --> H_Pozadavek
+        H_GW -- "Online" --> H_Online
+        H_Pozadavek --> H_Potvrzeni
+        H_Online --> H_Potvrzeni
+        H_Potvrzeni --> H_Checkin
+        H_Checkin --> H_Pobyt
+        H_Pobyt --> H_Checkout
+        H_Checkout --> H_Email
+        H_Email --> H_End
+    end
+
+    subgraph RECEPCE["Recepce"]
+        R_Prijem["Příjem požadavku\nna rezervaci"]
+        R_Overeni["Ověření dostupnosti\npokoje"]
+        R_GW_Dost{"Pokoj\ndostupný?"}
+        R_Alternativa["Nabídka alternativního\ntermínu/pokoje"]
+        R_VyhledaniCRM["Vyhledání hosta\nv CRM Salesforce"]
+        R_GW_Host{"Host nalezen\nv CRM?"}
+        R_NovyProfil["Vytvoření nového\nprofilu v CRM"]
+        R_Aktualizace["Kontrola a aktualizace\nprofilu, zobrazení\npreferencí"]
+        R_Potvrzeni["Potvrzení rezervace\nhostovi"]
+        R_Checkin["Check-in hosta\n(s využitím CRM profilu)"]
+        R_Checkout["Check-out hosta,\nvyúčtování"]
+
+        R_Prijem --> R_Overeni
+        R_Overeni --> R_GW_Dost
+        R_GW_Dost -- "Ne" --> R_Alternativa
+        R_Alternativa --> R_Overeni
+        R_GW_Dost -- "Ano" --> R_VyhledaniCRM
+        R_VyhledaniCRM --> R_GW_Host
+        R_GW_Host -- "Ne – nový host" --> R_NovyProfil
+        R_GW_Host -- "Ano – existující" --> R_Aktualizace
+        R_NovyProfil --> R_Potvrzeni
+        R_Aktualizace --> R_Potvrzeni
+        R_Potvrzeni --> R_Checkin
+        R_Checkin --> R_Checkout
+    end
+
+    subgraph PMS["PMS Horesplus"]
+        P_Overeni["Kontrola dostupnosti\npokojů"]
+        P_Zaznam["Záznam rezervace\ndo PMS"]
+        P_Checkout["Zpracování check-outu,\nvyúčtování"]
+    end
+
+    subgraph CRM["CRM Salesforce"]
+        C_Vyhledani["Vyhledání / zobrazení\nprofilu hosta"]
+        C_Sync["Synchronizace dat\no pobytu z PMS"]
+        C_Kampan["Automatická post-pobytová\nkampaň (Marketing Cloud)"]
+
+        C_Sync --> C_Kampan
+    end
+
+    subgraph CHM["Channel Manager (SiteMinder)"]
+        CM_Prijem["Příjem online\nrezervace (web/OTA)"]
+        CM_Predani["Předání rezervace\ndo PMS / recepce"]
+
+        CM_Prijem --> CM_Predani
+    end
+
+    %% Mezilanové toky (message flows)
+    H_Pozadavek -.-> R_Prijem
+    H_Online -.-> CM_Prijem
+    CM_Predani -.-> R_Prijem
+    R_Overeni -.-> P_Overeni
+    P_Overeni -.-> R_GW_Dost
+    R_VyhledaniCRM -.-> C_Vyhledani
+    C_Vyhledani -.-> R_GW_Host
+    R_Potvrzeni -.-> P_Zaznam
+    R_Potvrzeni -.-> H_Potvrzeni
+    R_Checkout -.-> P_Checkout
+    P_Checkout -.-> C_Sync
+    C_Kampan -.-> H_Email
+
+    style HOST fill:#fff2cc,stroke:#d6b656
+    style RECEPCE fill:#dae8fc,stroke:#6c8ebf
+    style PMS fill:#d5e8d4,stroke:#82b366
+    style CRM fill:#e1d5e7,stroke:#9673a6
+    style CHM fill:#f8cecc,stroke:#b85450

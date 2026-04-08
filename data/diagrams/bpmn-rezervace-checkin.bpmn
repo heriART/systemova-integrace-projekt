@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             id="Definitions_1"
+             targetNamespace="http://bpmn.io/schema/bpmn">
+
+  <collaboration id="Collaboration_1">
+    <participant id="Part_Host" name="Host" processRef="Process_Host"/>
+    <participant id="Part_Recepce" name="Recepce" processRef="Process_Recepce"/>
+    <participant id="Part_PMS" name="PMS Horesplus" processRef="Process_PMS"/>
+    <participant id="Part_CRM" name="CRM Salesforce" processRef="Process_CRM"/>
+    <participant id="Part_ChM" name="Channel Manager (SiteMinder)" processRef="Process_ChM"/>
+
+    <messageFlow id="MF1" name="Požadavek na rezervaci" sourceRef="Task_Host_Pozadavek" targetRef="Task_Rec_Prijem"/>
+    <messageFlow id="MF2" name="Online rezervace" sourceRef="Task_Host_Online" targetRef="Task_ChM_Prijem"/>
+    <messageFlow id="MF3" name="Rezervace z OTA" sourceRef="Task_ChM_Predani" targetRef="Task_Rec_Prijem"/>
+    <messageFlow id="MF4" name="Dotaz na dostupnost" sourceRef="Task_Rec_Overeni" targetRef="Task_PMS_Overeni"/>
+    <messageFlow id="MF5" name="Výsledek dostupnosti" sourceRef="Task_PMS_Overeni" targetRef="GW_Dostupnost"/>
+    <messageFlow id="MF6" name="Vyhledání hosta" sourceRef="Task_Rec_VyhledaniCRM" targetRef="Task_CRM_Vyhledani"/>
+    <messageFlow id="MF7" name="Profil hosta" sourceRef="Task_CRM_Vyhledani" targetRef="GW_NovyHost"/>
+    <messageFlow id="MF8" name="Záznam rezervace" sourceRef="Task_Rec_Potvrzeni" targetRef="Task_PMS_Zaznam"/>
+    <messageFlow id="MF9" name="Potvrzení rezervace" sourceRef="Task_Rec_Potvrzeni" targetRef="Task_Host_Potvrzeni"/>
+    <messageFlow id="MF10" name="Data o pobytu" sourceRef="Task_PMS_Checkout" targetRef="Task_CRM_Sync"/>
+    <messageFlow id="MF11" name="Post-pobytový e-mail" sourceRef="Task_CRM_Kampan" targetRef="Task_Host_Email"/>
+  </collaboration>
+
+  <!-- HOST PROCESS -->
+  <process id="Process_Host" isExecutable="false">
+    <startEvent id="Start_Host" name="Potřeba ubytování"/>
+    <exclusiveGateway id="GW_Kanal" name="Způsob rezervace?"/>
+    <task id="Task_Host_Pozadavek" name="Odeslání požadavku na rezervaci (telefon/e-mail)"/>
+    <task id="Task_Host_Online" name="Vytvoření online rezervace (web/OTA)"/>
+    <task id="Task_Host_Potvrzeni" name="Přijetí potvrzení rezervace"/>
+    <task id="Task_Host_Checkin" name="Příjezd a check-in"/>
+    <task id="Task_Host_Pobyt" name="Pobyt v hotelu"/>
+    <task id="Task_Host_Checkout" name="Check-out"/>
+    <task id="Task_Host_Email" name="Přijetí post-pobytového e-mailu"/>
+    <endEvent id="End_Host" name="Konec procesu"/>
+
+    <sequenceFlow id="F_H1" sourceRef="Start_Host" targetRef="GW_Kanal"/>
+    <sequenceFlow id="F_H2" sourceRef="GW_Kanal" targetRef="Task_Host_Pozadavek" name="Přímý kontakt"/>
+    <sequenceFlow id="F_H3" sourceRef="GW_Kanal" targetRef="Task_Host_Online" name="Online"/>
+    <sequenceFlow id="F_H4" sourceRef="Task_Host_Pozadavek" targetRef="Task_Host_Potvrzeni"/>
+    <sequenceFlow id="F_H5" sourceRef="Task_Host_Online" targetRef="Task_Host_Potvrzeni"/>
+    <sequenceFlow id="F_H6" sourceRef="Task_Host_Potvrzeni" targetRef="Task_Host_Checkin"/>
+    <sequenceFlow id="F_H7" sourceRef="Task_Host_Checkin" targetRef="Task_Host_Pobyt"/>
+    <sequenceFlow id="F_H8" sourceRef="Task_Host_Pobyt" targetRef="Task_Host_Checkout"/>
+    <sequenceFlow id="F_H9" sourceRef="Task_Host_Checkout" targetRef="Task_Host_Email"/>
+    <sequenceFlow id="F_H10" sourceRef="Task_Host_Email" targetRef="End_Host"/>
+  </process>
+
+  <!-- RECEPCE PROCESS -->
+  <process id="Process_Recepce" isExecutable="false">
+    <task id="Task_Rec_Prijem" name="Příjem požadavku na rezervaci"/>
+    <task id="Task_Rec_Overeni" name="Ověření dostupnosti pokoje"/>
+    <exclusiveGateway id="GW_Dostupnost" name="Pokoj dostupný?"/>
+    <task id="Task_Rec_Alternativa" name="Nabídka alternativního termínu/pokoje"/>
+    <task id="Task_Rec_VyhledaniCRM" name="Vyhledání hosta v CRM Salesforce"/>
+    <exclusiveGateway id="GW_NovyHost" name="Host nalezen v CRM?"/>
+    <task id="Task_Rec_NovyProfil" name="Vytvoření nového profilu v CRM"/>
+    <task id="Task_Rec_AktualizaceProfilu" name="Kontrola a aktualizace profilu, zobrazení preferencí"/>
+    <task id="Task_Rec_Potvrzeni" name="Potvrzení rezervace hostovi"/>
+    <task id="Task_Rec_Checkin" name="Check-in hosta (s využitím CRM profilu)"/>
+    <task id="Task_Rec_Checkout" name="Check-out hosta, vyúčtování"/>
+
+    <sequenceFlow id="F_R1" sourceRef="Task_Rec_Prijem" targetRef="Task_Rec_Overeni"/>
+    <sequenceFlow id="F_R2" sourceRef="Task_Rec_Overeni" targetRef="GW_Dostupnost"/>
+    <sequenceFlow id="F_R3" sourceRef="GW_Dostupnost" targetRef="Task_Rec_Alternativa" name="Ne"/>
+    <sequenceFlow id="F_R4" sourceRef="Task_Rec_Alternativa" targetRef="Task_Rec_Overeni"/>
+    <sequenceFlow id="F_R5" sourceRef="GW_Dostupnost" targetRef="Task_Rec_VyhledaniCRM" name="Ano"/>
+    <sequenceFlow id="F_R6" sourceRef="Task_Rec_VyhledaniCRM" targetRef="GW_NovyHost"/>
+    <sequenceFlow id="F_R7" sourceRef="GW_NovyHost" targetRef="Task_Rec_NovyProfil" name="Ne – nový host"/>
+    <sequenceFlow id="F_R8" sourceRef="GW_NovyHost" targetRef="Task_Rec_AktualizaceProfilu" name="Ano – existující host"/>
+    <sequenceFlow id="F_R9" sourceRef="Task_Rec_NovyProfil" targetRef="Task_Rec_Potvrzeni"/>
+    <sequenceFlow id="F_R10" sourceRef="Task_Rec_AktualizaceProfilu" targetRef="Task_Rec_Potvrzeni"/>
+    <sequenceFlow id="F_R11" sourceRef="Task_Rec_Potvrzeni" targetRef="Task_Rec_Checkin"/>
+    <sequenceFlow id="F_R12" sourceRef="Task_Rec_Checkin" targetRef="Task_Rec_Checkout"/>
+  </process>
+
+  <!-- PMS PROCESS -->
+  <process id="Process_PMS" isExecutable="false">
+    <task id="Task_PMS_Overeni" name="Kontrola dostupnosti pokojů"/>
+    <task id="Task_PMS_Zaznam" name="Záznam rezervace do PMS"/>
+    <task id="Task_PMS_Checkout" name="Zpracování check-outu, vyúčtování"/>
+  </process>
+
+  <!-- CRM SALESFORCE PROCESS -->
+  <process id="Process_CRM" isExecutable="false">
+    <task id="Task_CRM_Vyhledani" name="Vyhledání/zobrazení profilu hosta"/>
+    <task id="Task_CRM_Sync" name="Synchronizace dat o pobytu z PMS"/>
+    <task id="Task_CRM_Kampan" name="Automatická post-pobytová kampaň (Marketing Cloud)"/>
+
+    <sequenceFlow id="F_C1" sourceRef="Task_CRM_Sync" targetRef="Task_CRM_Kampan"/>
+  </process>
+
+  <!-- CHANNEL MANAGER PROCESS -->
+  <process id="Process_ChM" isExecutable="false">
+    <task id="Task_ChM_Prijem" name="Příjem online rezervace (web/OTA)"/>
+    <task id="Task_ChM_Predani" name="Předání rezervace do PMS/recepce"/>
+
+    <sequenceFlow id="F_CM1" sourceRef="Task_ChM_Prijem" targetRef="Task_ChM_Predani"/>
+  </process>
+
+  <!-- DIAGRAM LAYOUT -->
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1">
+
+      <!-- HOST LANE -->
+      <bpmndi:BPMNShape id="Shape_Part_Host" bpmnElement="Part_Host" isHorizontal="true">
+        <dc:Bounds x="130" y="10" width="1600" height="200"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Start_Host" bpmnElement="Start_Host">
+        <dc:Bounds x="190" y="82" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_GW_Kanal" bpmnElement="GW_Kanal" isMarkerVisible="true">
+        <dc:Bounds x="265" y="75" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Host_Pozadavek" bpmnElement="Task_Host_Pozadavek">
+        <dc:Bounds x="350" y="30" width="150" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Host_Online" bpmnElement="Task_Host_Online">
+        <dc:Bounds x="350" y="120" width="150" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Host_Potvrzeni" bpmnElement="Task_Host_Potvrzeni">
+        <dc:Bounds x="560" y="70" width="150" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Host_Checkin" bpmnElement="Task_Host_Checkin">
+        <dc:Bounds x="750" y="70" width="130" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Host_Pobyt" bpmnElement="Task_Host_Pobyt">
+        <dc:Bounds x="920" y="70" width="120" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Host_Checkout" bpmnElement="Task_Host_Checkout">
+        <dc:Bounds x="1080" y="70" width="120" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Host_Email" bpmnElement="Task_Host_Email">
+        <dc:Bounds x="1250" y="70" width="170" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_Host" bpmnElement="End_Host">
+        <dc:Bounds x="1470" y="78" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+
+      <!-- RECEPCE LANE -->
+      <bpmndi:BPMNShape id="Shape_Part_Recepce" bpmnElement="Part_Recepce" isHorizontal="true">
+        <dc:Bounds x="130" y="220" width="1600" height="250"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Rec_Prijem" bpmnElement="Task_Rec_Prijem">
+        <dc:Bounds x="190" y="290" width="150" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Rec_Overeni" bpmnElement="Task_Rec_Overeni">
+        <dc:Bounds x="380" y="290" width="150" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_GW_Dostupnost" bpmnElement="GW_Dostupnost" isMarkerVisible="true">
+        <dc:Bounds x="570" y="290" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Rec_Alternativa" bpmnElement="Task_Rec_Alternativa">
+        <dc:Bounds x="545" y="390" width="200" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Rec_VyhledaniCRM" bpmnElement="Task_Rec_VyhledaniCRM">
+        <dc:Bounds x="660" y="250" width="180" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_GW_NovyHost" bpmnElement="GW_NovyHost" isMarkerVisible="true">
+        <dc:Bounds x="870" y="250" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Rec_NovyProfil" bpmnElement="Task_Rec_NovyProfil">
+        <dc:Bounds x="950" y="230" width="180" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Rec_AktualizaceProfilu" bpmnElement="Task_Rec_AktualizaceProfilu">
+        <dc:Bounds x="950" y="310" width="200" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Rec_Potvrzeni" bpmnElement="Task_Rec_Potvrzeni">
+        <dc:Bounds x="1190" y="270" width="150" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Rec_Checkin" bpmnElement="Task_Rec_Checkin">
+        <dc:Bounds x="1370" y="270" width="160" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Rec_Checkout" bpmnElement="Task_Rec_Checkout">
+        <dc:Bounds x="1550" y="270" width="150" height="50"/>
+      </bpmndi:BPMNShape>
+
+      <!-- PMS LANE -->
+      <bpmndi:BPMNShape id="Shape_Part_PMS" bpmnElement="Part_PMS" isHorizontal="true">
+        <dc:Bounds x="130" y="480" width="1600" height="130"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_PMS_Overeni" bpmnElement="Task_PMS_Overeni">
+        <dc:Bounds x="380" y="510" width="170" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_PMS_Zaznam" bpmnElement="Task_PMS_Zaznam">
+        <dc:Bounds x="1190" y="510" width="160" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_PMS_Checkout" bpmnElement="Task_PMS_Checkout">
+        <dc:Bounds x="1550" y="510" width="150" height="50"/>
+      </bpmndi:BPMNShape>
+
+      <!-- CRM SALESFORCE LANE -->
+      <bpmndi:BPMNShape id="Shape_Part_CRM" bpmnElement="Part_CRM" isHorizontal="true">
+        <dc:Bounds x="130" y="620" width="1600" height="130"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_CRM_Vyhledani" bpmnElement="Task_CRM_Vyhledani">
+        <dc:Bounds x="660" y="650" width="200" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_CRM_Sync" bpmnElement="Task_CRM_Sync">
+        <dc:Bounds x="1190" y="650" width="200" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_CRM_Kampan" bpmnElement="Task_CRM_Kampan">
+        <dc:Bounds x="1430" y="650" width="250" height="50"/>
+      </bpmndi:BPMNShape>
+
+      <!-- CHANNEL MANAGER LANE -->
+      <bpmndi:BPMNShape id="Shape_Part_ChM" bpmnElement="Part_ChM" isHorizontal="true">
+        <dc:Bounds x="130" y="760" width="1600" height="130"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ChM_Prijem" bpmnElement="Task_ChM_Prijem">
+        <dc:Bounds x="350" y="790" width="200" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ChM_Predani" bpmnElement="Task_ChM_Predani">
+        <dc:Bounds x="600" y="790" width="200" height="50"/>
+      </bpmndi:BPMNShape>
+
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
