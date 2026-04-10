@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  id="Definitions_1"
+                  targetNamespace="http://bpmn.io/schema/bpmn"
+                  exporter="bpmn-js"
+                  exporterVersion="17.0.0">
+
+  <bpmn:collaboration id="Collaboration_1">
+    <bpmn:participant id="Part_Host" name="Host" processRef="Process_Host"/>
+    <bpmn:participant id="Part_Recepce" name="Recepce" processRef="Process_Recepce"/>
+    <bpmn:participant id="Part_PMS" name="PMS Horesplus" processRef="Process_PMS"/>
+    <bpmn:participant id="Part_CRM" name="CRM Salesforce" processRef="Process_CRM"/>
+    <bpmn:participant id="Part_ChM" name="Channel Manager (SiteMinder)" processRef="Process_ChM"/>
+
+    <bpmn:messageFlow id="MF_Host_Recepce" name="Požadavek na rezervaci" sourceRef="Task_H_Pozadavek" targetRef="Task_R_Prijem"/>
+    <bpmn:messageFlow id="MF_Host_ChM" name="Online rezervace" sourceRef="Task_H_Online" targetRef="Task_CM_Prijem"/>
+    <bpmn:messageFlow id="MF_ChM_Recepce" name="Rezervace z OTA/webu" sourceRef="Task_CM_Predani" targetRef="Task_R_Prijem"/>
+    <bpmn:messageFlow id="MF_Rec_PMS_Dotaz" name="Dotaz na dostupnost" sourceRef="Task_R_Overeni" targetRef="Task_P_Overeni"/>
+    <bpmn:messageFlow id="MF_PMS_Rec_Vysledek" name="Výsledek dostupnosti" sourceRef="Task_P_Overeni" targetRef="Task_R_Overeni"/>
+    <bpmn:messageFlow id="MF_Rec_CRM_Vyhledani" name="Vyhledání hosta" sourceRef="Task_R_CRM" targetRef="Task_C_Vyhledani"/>
+    <bpmn:messageFlow id="MF_CRM_Rec_Profil" name="Profil hosta / nenalezen" sourceRef="Task_C_Vyhledani" targetRef="GW_R_Host"/>
+    <bpmn:messageFlow id="MF_Rec_PMS_Zaznam" name="Záznam rezervace" sourceRef="Task_R_Potvrzeni" targetRef="Task_P_Zaznam"/>
+    <bpmn:messageFlow id="MF_Rec_Host_Potvrzeni" name="Potvrzení rezervace" sourceRef="Task_R_Potvrzeni" targetRef="Task_H_Potvrzeni"/>
+    <bpmn:messageFlow id="MF_PMS_CRM_Sync" name="Data o pobytu" sourceRef="Task_P_Checkout" targetRef="Task_C_Sync"/>
+    <bpmn:messageFlow id="MF_CRM_Host_Email" name="Post-pobytový e-mail" sourceRef="Task_C_Kampan" targetRef="Task_H_Email"/>
+  </bpmn:collaboration>
+
+  <!-- ==================== HOST ==================== -->
+  <bpmn:process id="Process_Host" isExecutable="false">
+    <bpmn:startEvent id="Start_H" name="Potřeba ubytování">
+      <bpmn:outgoing>F_H1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="GW_H_Kanal" name="Způsob rezervace?">
+      <bpmn:incoming>F_H1</bpmn:incoming>
+      <bpmn:outgoing>F_H2</bpmn:outgoing>
+      <bpmn:outgoing>F_H3</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_H_Pozadavek" name="Odeslání požadavku na rezervaci (telefon / e-mail)">
+      <bpmn:incoming>F_H2</bpmn:incoming>
+      <bpmn:outgoing>F_H4</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_H_Online" name="Vytvoření online rezervace (web / OTA)">
+      <bpmn:incoming>F_H3</bpmn:incoming>
+      <bpmn:outgoing>F_H5</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:intermediateCatchEvent id="Task_H_Potvrzeni" name="Přijetí potvrzení rezervace">
+      <bpmn:incoming>F_H4</bpmn:incoming>
+      <bpmn:incoming>F_H5</bpmn:incoming>
+      <bpmn:outgoing>F_H6</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MsgEvt_Potvrzeni"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:task id="Task_H_Checkin" name="Příjezd a check-in">
+      <bpmn:incoming>F_H6</bpmn:incoming>
+      <bpmn:outgoing>F_H7</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_H_Pobyt" name="Pobyt v hotelu">
+      <bpmn:incoming>F_H7</bpmn:incoming>
+      <bpmn:outgoing>F_H8</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_H_Checkout" name="Check-out">
+      <bpmn:incoming>F_H8</bpmn:incoming>
+      <bpmn:outgoing>F_H9</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:intermediateCatchEvent id="Task_H_Email" name="Přijetí post-pobytového e-mailu">
+      <bpmn:incoming>F_H9</bpmn:incoming>
+      <bpmn:outgoing>F_H10</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MsgEvt_Email"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="End_H" name="Konec">
+      <bpmn:incoming>F_H10</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:sequenceFlow id="F_H1" sourceRef="Start_H" targetRef="GW_H_Kanal"/>
+    <bpmn:sequenceFlow id="F_H2" name="Přímý kontakt" sourceRef="GW_H_Kanal" targetRef="Task_H_Pozadavek"/>
+    <bpmn:sequenceFlow id="F_H3" name="Online" sourceRef="GW_H_Kanal" targetRef="Task_H_Online"/>
+    <bpmn:sequenceFlow id="F_H4" sourceRef="Task_H_Pozadavek" targetRef="Task_H_Potvrzeni"/>
+    <bpmn:sequenceFlow id="F_H5" sourceRef="Task_H_Online" targetRef="Task_H_Potvrzeni"/>
+    <bpmn:sequenceFlow id="F_H6" sourceRef="Task_H_Potvrzeni" targetRef="Task_H_Checkin"/>
+    <bpmn:sequenceFlow id="F_H7" sourceRef="Task_H_Checkin" targetRef="Task_H_Pobyt"/>
+    <bpmn:sequenceFlow id="F_H8" sourceRef="Task_H_Pobyt" targetRef="Task_H_Checkout"/>
+    <bpmn:sequenceFlow id="F_H9" sourceRef="Task_H_Checkout" targetRef="Task_H_Email"/>
+    <bpmn:sequenceFlow id="F_H10" sourceRef="Task_H_Email" targetRef="End_H"/>
+  </bpmn:process>
+
+  <!-- ==================== RECEPCE ==================== -->
+  <bpmn:process id="Process_Recepce" isExecutable="false">
+    <bpmn:task id="Task_R_Prijem" name="Příjem požadavku na rezervaci">
+      <bpmn:outgoing>F_R1</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_R_Overeni" name="Ověření dostupnosti pokoje v PMS">
+      <bpmn:incoming>F_R1</bpmn:incoming>
+      <bpmn:incoming>F_R4</bpmn:incoming>
+      <bpmn:outgoing>F_R2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="GW_R_Dost" name="Pokoj dostupný?">
+      <bpmn:incoming>F_R2</bpmn:incoming>
+      <bpmn:outgoing>F_R3</bpmn:outgoing>
+      <bpmn:outgoing>F_R5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_R_Alternativa" name="Nabídka alternativního termínu / pokoje">
+      <bpmn:incoming>F_R3</bpmn:incoming>
+      <bpmn:outgoing>F_R4</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_R_CRM" name="Vyhledání hosta v CRM Salesforce">
+      <bpmn:incoming>F_R5</bpmn:incoming>
+      <bpmn:outgoing>F_R6</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="GW_R_Host" name="Host nalezen v CRM?">
+      <bpmn:incoming>F_R6</bpmn:incoming>
+      <bpmn:outgoing>F_R7</bpmn:outgoing>
+      <bpmn:outgoing>F_R8</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_R_NovyProfil" name="Vytvoření nového zákaznického profilu v CRM">
+      <bpmn:incoming>F_R7</bpmn:incoming>
+      <bpmn:outgoing>F_R9</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_R_Aktualizace" name="Zobrazení profilu, kontrola preferencí a aktualizace údajů">
+      <bpmn:incoming>F_R8</bpmn:incoming>
+      <bpmn:outgoing>F_R10</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="GW_R_Merge" name="">
+      <bpmn:incoming>F_R9</bpmn:incoming>
+      <bpmn:incoming>F_R10</bpmn:incoming>
+      <bpmn:outgoing>F_R11</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_R_Potvrzeni" name="Potvrzení rezervace hostovi a záznam do PMS">
+      <bpmn:incoming>F_R11</bpmn:incoming>
+      <bpmn:outgoing>F_R12</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_R_Checkin" name="Check-in hosta (s využitím CRM profilu a preferencí)">
+      <bpmn:incoming>F_R12</bpmn:incoming>
+      <bpmn:outgoing>F_R13</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_R_Checkout" name="Check-out hosta, vyúčtování pobytu">
+      <bpmn:incoming>F_R13</bpmn:incoming>
+    </bpmn:task>
+
+    <bpmn:sequenceFlow id="F_R1" sourceRef="Task_R_Prijem" targetRef="Task_R_Overeni"/>
+    <bpmn:sequenceFlow id="F_R2" sourceRef="Task_R_Overeni" targetRef="GW_R_Dost"/>
+    <bpmn:sequenceFlow id="F_R3" name="Ne" sourceRef="GW_R_Dost" targetRef="Task_R_Alternativa"/>
+    <bpmn:sequenceFlow id="F_R4" sourceRef="Task_R_Alternativa" targetRef="Task_R_Overeni"/>
+    <bpmn:sequenceFlow id="F_R5" name="Ano" sourceRef="GW_R_Dost" targetRef="Task_R_CRM"/>
+    <bpmn:sequenceFlow id="F_R6" sourceRef="Task_R_CRM" targetRef="GW_R_Host"/>
+    <bpmn:sequenceFlow id="F_R7" name="Ne – nový host" sourceRef="GW_R_Host" targetRef="Task_R_NovyProfil"/>
+    <bpmn:sequenceFlow id="F_R8" name="Ano – existující host" sourceRef="GW_R_Host" targetRef="Task_R_Aktualizace"/>
+    <bpmn:sequenceFlow id="F_R9" sourceRef="Task_R_NovyProfil" targetRef="GW_R_Merge"/>
+    <bpmn:sequenceFlow id="F_R10" sourceRef="Task_R_Aktualizace" targetRef="GW_R_Merge"/>
+    <bpmn:sequenceFlow id="F_R11" sourceRef="GW_R_Merge" targetRef="Task_R_Potvrzeni"/>
+    <bpmn:sequenceFlow id="F_R12" sourceRef="Task_R_Potvrzeni" targetRef="Task_R_Checkin"/>
+    <bpmn:sequenceFlow id="F_R13" sourceRef="Task_R_Checkin" targetRef="Task_R_Checkout"/>
+  </bpmn:process>
+
+  <!-- ==================== PMS HORESPLUS ==================== -->
+  <bpmn:process id="Process_PMS" isExecutable="false">
+    <bpmn:task id="Task_P_Overeni" name="Kontrola dostupnosti pokojů">
+    </bpmn:task>
+    <bpmn:task id="Task_P_Zaznam" name="Záznam rezervace do systému">
+    </bpmn:task>
+    <bpmn:task id="Task_P_Checkout" name="Zpracování check-outu a vyúčtování">
+    </bpmn:task>
+    <bpmn:sequenceFlow id="F_P1" sourceRef="Task_P_Overeni" targetRef="Task_P_Zaznam"/>
+    <bpmn:sequenceFlow id="F_P2" sourceRef="Task_P_Zaznam" targetRef="Task_P_Checkout"/>
+  </bpmn:process>
+
+  <!-- ==================== CRM SALESFORCE ==================== -->
+  <bpmn:process id="Process_CRM" isExecutable="false">
+    <bpmn:task id="Task_C_Vyhledani" name="Vyhledání / zobrazení profilu hosta">
+      <bpmn:outgoing>F_C1</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_C_Sync" name="Synchronizace dat o pobytu z PMS">
+      <bpmn:incoming>F_C1</bpmn:incoming>
+      <bpmn:outgoing>F_C2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_C_Kampan" name="Spuštění automatické post-pobytové kampaně (Marketing Cloud)">
+      <bpmn:incoming>F_C2</bpmn:incoming>
+    </bpmn:task>
+
+    <bpmn:sequenceFlow id="F_C1" sourceRef="Task_C_Vyhledani" targetRef="Task_C_Sync"/>
+    <bpmn:sequenceFlow id="F_C2" sourceRef="Task_C_Sync" targetRef="Task_C_Kampan"/>
+  </bpmn:process>
+
+  <!-- ==================== CHANNEL MANAGER ==================== -->
+  <bpmn:process id="Process_ChM" isExecutable="false">
+    <bpmn:task id="Task_CM_Prijem" name="Příjem online rezervace (web / OTA)">
+      <bpmn:outgoing>F_CM1</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_CM_Predani" name="Předání rezervace do recepce / PMS">
+      <bpmn:incoming>F_CM1</bpmn:incoming>
+    </bpmn:task>
+
+    <bpmn:sequenceFlow id="F_CM1" sourceRef="Task_CM_Prijem" targetRef="Task_CM_Predani"/>
+  </bpmn:process>
+
+  <!-- ==================== DIAGRAM LAYOUT ==================== -->
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1">
+
+      <!-- ===== HOST POOL ===== -->
+      <bpmndi:BPMNShape id="Shape_Part_Host" bpmnElement="Part_Host" isHorizontal="true">
+        <dc:Bounds x="160" y="10" width="1540" height="200"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Start_H" bpmnElement="Start_H">
+        <dc:Bounds x="212" y="92" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_GW_H_Kanal" bpmnElement="GW_H_Kanal" isMarkerVisible="true">
+        <dc:Bounds x="285" y="85" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_H_Pozadavek" bpmnElement="Task_H_Pozadavek">
+        <dc:Bounds x="370" y="30" width="170" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_H_Online" bpmnElement="Task_H_Online">
+        <dc:Bounds x="370" y="130" width="170" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_H_Potvrzeni" bpmnElement="Task_H_Potvrzeni">
+        <dc:Bounds x="582" y="92" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_H_Checkin" bpmnElement="Task_H_Checkin">
+        <dc:Bounds x="660" y="75" width="130" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_H_Pobyt" bpmnElement="Task_H_Pobyt">
+        <dc:Bounds x="830" y="75" width="120" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_H_Checkout" bpmnElement="Task_H_Checkout">
+        <dc:Bounds x="990" y="75" width="120" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_H_Email" bpmnElement="Task_H_Email">
+        <dc:Bounds x="1152" y="82" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End_H" bpmnElement="End_H">
+        <dc:Bounds x="1232" y="82" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+
+      <!-- ===== RECEPCE POOL ===== -->
+      <bpmndi:BPMNShape id="Shape_Part_Recepce" bpmnElement="Part_Recepce" isHorizontal="true">
+        <dc:Bounds x="160" y="220" width="1540" height="280"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_R_Prijem" bpmnElement="Task_R_Prijem">
+        <dc:Bounds x="220" y="310" width="150" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_R_Overeni" bpmnElement="Task_R_Overeni">
+        <dc:Bounds x="400" y="310" width="160" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_GW_R_Dost" bpmnElement="GW_R_Dost" isMarkerVisible="true">
+        <dc:Bounds x="590" y="310" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_R_Alternativa" bpmnElement="Task_R_Alternativa">
+        <dc:Bounds x="565" y="420" width="200" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_R_CRM" bpmnElement="Task_R_CRM">
+        <dc:Bounds x="670" y="260" width="180" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_GW_R_Host" bpmnElement="GW_R_Host" isMarkerVisible="true">
+        <dc:Bounds x="880" y="260" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_R_NovyProfil" bpmnElement="Task_R_NovyProfil">
+        <dc:Bounds x="960" y="235" width="180" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_R_Aktualizace" bpmnElement="Task_R_Aktualizace">
+        <dc:Bounds x="960" y="320" width="200" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_GW_R_Merge" bpmnElement="GW_R_Merge" isMarkerVisible="true">
+        <dc:Bounds x="1185" y="275" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_R_Potvrzeni" bpmnElement="Task_R_Potvrzeni">
+        <dc:Bounds x="1260" y="275" width="170" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_R_Checkin" bpmnElement="Task_R_Checkin">
+        <dc:Bounds x="1260" y="360" width="170" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_R_Checkout" bpmnElement="Task_R_Checkout">
+        <dc:Bounds x="1460" y="360" width="170" height="50"/>
+      </bpmndi:BPMNShape>
+
+      <!-- ===== PMS POOL ===== -->
+      <bpmndi:BPMNShape id="Shape_Part_PMS" bpmnElement="Part_PMS" isHorizontal="true">
+        <dc:Bounds x="160" y="510" width="1540" height="130"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_P_Overeni" bpmnElement="Task_P_Overeni">
+        <dc:Bounds x="400" y="545" width="170" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_P_Zaznam" bpmnElement="Task_P_Zaznam">
+        <dc:Bounds x="1260" y="545" width="170" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_P_Checkout" bpmnElement="Task_P_Checkout">
+        <dc:Bounds x="1460" y="545" width="170" height="50"/>
+      </bpmndi:BPMNShape>
+
+      <!-- ===== CRM SALESFORCE POOL ===== -->
+      <bpmndi:BPMNShape id="Shape_Part_CRM" bpmnElement="Part_CRM" isHorizontal="true">
+        <dc:Bounds x="160" y="650" width="1540" height="130"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_C_Vyhledani" bpmnElement="Task_C_Vyhledani">
+        <dc:Bounds x="670" y="685" width="180" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_C_Sync" bpmnElement="Task_C_Sync">
+        <dc:Bounds x="1260" y="685" width="170" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_C_Kampan" bpmnElement="Task_C_Kampan">
+        <dc:Bounds x="1460" y="685" width="170" height="50"/>
+      </bpmndi:BPMNShape>
+
+      <!-- ===== CHANNEL MANAGER POOL ===== -->
+      <bpmndi:BPMNShape id="Shape_Part_ChM" bpmnElement="Part_ChM" isHorizontal="true">
+        <dc:Bounds x="160" y="790" width="1540" height="120"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_CM_Prijem" bpmnElement="Task_CM_Prijem">
+        <dc:Bounds x="370" y="825" width="180" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_CM_Predani" bpmnElement="Task_CM_Predani">
+        <dc:Bounds x="600" y="825" width="180" height="50"/>
+      </bpmndi:BPMNShape>
+
+      <!-- ===== SEQUENCE FLOW EDGES ===== -->
+      <!-- Host -->
+      <bpmndi:BPMNEdge id="Edge_F_H1" bpmnElement="F_H1">
+        <di:waypoint x="248" y="110"/>
+        <di:waypoint x="285" y="110"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_F_H2" bpmnElement="F_H2">
+        <di:waypoint x="310" y="85"/>
+        <di:waypoint x="310" y="55"/>
+        <di:waypoint x="370" y="55"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_F_H3" bpmnElement="F_H3">
+        <di:waypoint x="310" y="135"/>
+        <di:waypoint x="310" y="155"/>
+        <di:waypoint x="370" y="155"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_F_H4" bpmnElement="F_H4">
+        <di:waypoint x="540" y="55"/>
+        <di:waypoint x="600" y="55"/>
+        <di:waypoint x="600" y="92"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_F_H5" bpmnElement="F_H5">
+        <di:waypoint x="540" y="155"/>
+        <di:waypoint x="600" y="155"/>
+        <di:waypoint x="600" y="128"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_F_H6" bpmnElement="F_H6">
+        <di:waypoint x="618" y="110"/>
+        <di:waypoint x="660" y="100"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_F_H7" bpmnElement="F_H7">
+        <di:waypoint x="790" y="100"/>
+        <di:waypoint x="830" y="100"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_F_H8" bpmnElement="F_H8">
+        <di:waypoint x="950" y="100"/>
+        <di:waypoint x="990" y="100"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_F_H9" bpmnElement="F_H9">
+        <di:waypoint x="1110" y="100"/>
+        <di:waypoint x="1152" y="100"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_F_H10" bpmnElement="F_H10">
+        <di:waypoint x="1188" y="100"/>
+        <di:waypoint x="1232" y="100"/>
+      </bpmndi:BPMNEdge>
+
+      <!-- Recepce -->
+      <bpmndi:BPMNEdge id="Edge_F_R1" bpmnElement="F_R1">
+        <di:waypoint x="370" y="335"/>
+        <di:waypoint x="400" y="335"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_F_R2" bpmnElement="F_R2">
+        <di:waypoint x="560" y="335"/>
+        <di:waypoint x="590" y="335"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_F_R3" bpmnElement="F_R3">
+        <di:waypoint x="615" y="360"/>
+        <di:waypoint x="615" y="420"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_F_R4" bpmnElement="F_R4">
+        <di:waypoint x="565" y="445"/>
+        <di:waypoint x="480" y="445"/>
+        <di:waypoint x="480" y="360"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_F_R5" bpmnElement="F_R5">
+        <di:waypoint x="640" y="335"/>
+        <di:waypoint x="655" y="335"/>
+        <di:waypoint x="655" y="285"/>
+        <di:waypoint x="670" y="285"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_F_R6" bpmnElement="F_R6">
+        <di:waypoint x="850" y="285"/>
+        <di:waypoint x="880" y="285"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_F_R7" bpmnElement="F_R7">
+        <di:waypoint x="930" y="285"/>
+        <di:waypoint x="945" y="285"/>
+        <di:waypoint x="945" y="260"/>
+        <di:waypoint x="960" y="260"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_F_R8" bpmnElement="F_R8">
+        <di:waypoint x="905" y="310"/>
+        <di:waypoint x="905" y="345"/>
+        <di:waypoint x="960" y="345"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_F_R9" bpmnElement="F_R9">
+        <di:waypoint x="1140" y="260"/>
+        <di:waypoint x="1210" y="260"/>
+        <di:waypoint x="1210" y="275"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_F_R10" bpmnElement="F_R10">
+        <di:waypoint x="1160" y="345"/>
+        <di:waypoint x="1210" y="345"/>
+        <di:waypoint x="1210" y="325"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_F_R11" bpmnElement="F_R11">
+        <di:waypoint x="1235" y="300"/>
+        <di:waypoint x="1260" y="300"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_F_R12" bpmnElement="F_R12">
+        <di:waypoint x="1345" y="325"/>
+        <di:waypoint x="1345" y="360"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_F_R13" bpmnElement="F_R13">
+        <di:waypoint x="1430" y="385"/>
+        <di:waypoint x="1460" y="385"/>
+      </bpmndi:BPMNEdge>
+
+      <!-- PMS -->
+      <bpmndi:BPMNEdge id="Edge_F_P1" bpmnElement="F_P1">
+        <di:waypoint x="570" y="570"/>
+        <di:waypoint x="1260" y="570"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_F_P2" bpmnElement="F_P2">
+        <di:waypoint x="1430" y="570"/>
+        <di:waypoint x="1460" y="570"/>
+      </bpmndi:BPMNEdge>
+
+      <!-- CRM -->
+      <bpmndi:BPMNEdge id="Edge_F_C1" bpmnElement="F_C1">
+        <di:waypoint x="850" y="710"/>
+        <di:waypoint x="1260" y="710"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_F_C2" bpmnElement="F_C2">
+        <di:waypoint x="1430" y="710"/>
+        <di:waypoint x="1460" y="710"/>
+      </bpmndi:BPMNEdge>
+
+      <!-- Channel Manager -->
+      <bpmndi:BPMNEdge id="Edge_F_CM1" bpmnElement="F_CM1">
+        <di:waypoint x="550" y="850"/>
+        <di:waypoint x="600" y="850"/>
+      </bpmndi:BPMNEdge>
+
+      <!-- ===== MESSAGE FLOW EDGES ===== -->
+      <bpmndi:BPMNEdge id="Edge_MF_Host_Recepce" bpmnElement="MF_Host_Recepce">
+        <di:waypoint x="455" y="80"/>
+        <di:waypoint x="295" y="310"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_MF_Host_ChM" bpmnElement="MF_Host_ChM">
+        <di:waypoint x="455" y="180"/>
+        <di:waypoint x="460" y="825"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_MF_ChM_Recepce" bpmnElement="MF_ChM_Recepce">
+        <di:waypoint x="690" y="825"/>
+        <di:waypoint x="295" y="360"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_MF_Rec_PMS" bpmnElement="MF_Rec_PMS_Dotaz">
+        <di:waypoint x="480" y="360"/>
+        <di:waypoint x="485" y="545"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_MF_PMS_Rec" bpmnElement="MF_PMS_Rec_Vysledek">
+        <di:waypoint x="520" y="545"/>
+        <di:waypoint x="520" y="360"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_MF_Rec_CRM" bpmnElement="MF_Rec_CRM_Vyhledani">
+        <di:waypoint x="760" y="310"/>
+        <di:waypoint x="760" y="685"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_MF_CRM_Rec" bpmnElement="MF_CRM_Rec_Profil">
+        <di:waypoint x="800" y="685"/>
+        <di:waypoint x="905" y="310"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_MF_Rec_PMS_Zaznam" bpmnElement="MF_Rec_PMS_Zaznam">
+        <di:waypoint x="1345" y="325"/>
+        <di:waypoint x="1345" y="545"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_MF_Rec_Host" bpmnElement="MF_Rec_Host_Potvrzeni">
+        <di:waypoint x="1345" y="275"/>
+        <di:waypoint x="600" y="128"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_MF_PMS_CRM" bpmnElement="MF_PMS_CRM_Sync">
+        <di:waypoint x="1545" y="595"/>
+        <di:waypoint x="1345" y="685"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_MF_CRM_Host" bpmnElement="MF_CRM_Host_Email">
+        <di:waypoint x="1545" y="685"/>
+        <di:waypoint x="1170" y="128"/>
+      </bpmndi:BPMNEdge>
+
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

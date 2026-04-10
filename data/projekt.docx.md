@@ -265,30 +265,23 @@ Hlavním problémem současného stavu je **absence centrálního CRM systému**
 
 ## **5.2 Vztah IS k okolí – výchozí kontextový diagram (stávající situace)** {#5.2-kontextový-diagram-stávající-situace}
 
-Kontextový diagram zachycuje stávající vztahy informačního systému Aurora Hotels a.s. k jeho okolí. IS podniku je zobrazen jako centrální prvek a kolem něj jsou uvedeny externí entity (aktéři), kteří s ním komunikují. Diagram ukazuje, jaké informační toky v současnosti existují.
+Kontextový diagram zachycuje stávající vztahy informačního systému Aurora Hotels a.s. k jeho okolí. IS podniku je zobrazen jako centrální kruhový prvek (dle konvence kontextových diagramů) a kolem něj jsou rozmístěny externí entity (obdélníky), které s ním komunikují. Šipky znázorňují směr informačních toků – plné šipky představují vstupní data do systému, čárkované šipky představují výstupy ze systému.
+
+**Externí entity v diagramu:**
+
+* **Host** (individuální / firemní) – příjemce služeb, zdroj požadavků na rezervaci
+* **OTA kanály** (Booking.com, Expedia) – zdroj online rezervací
+* **Channel Manager (SiteMinder)** – prostředník mezi OTA kanály a IS
+* **Webové stránky Aurora Hotels** – prezentační a rezervační web
+* **Firemní klienti** – organizace poptávající konferenční a ubytovací služby
+* **Účetní systém (Money S5)** – příjemce fakturačních dat z IS
+* **Finanční úřad** – příjemce daňových přiznání a účetních výkazů z účetního systému
+* **Vedení společnosti** – příjemce reportů a sestav
 
 *Obrázek 2: Kontextový diagram – stávající situace*
 
-<!-- Diagram je dostupný v souboru data/diagrams/kontextovy-diagram-stavajici.drawio -->
+<!-- Diagram je dostupný v souboru data/diagrams/kontextovy-diagram-stavajici-v2.drawio -->
 
-**Popis informačních toků ve stávající situaci:**
-
-| Tok | Od → Do | Popis |
-| :--- | :--- | :--- |
-| T1 | Host → PMS | Osobní údaje, požadavky na rezervaci, preference |
-| T2 | PMS → Host | Potvrzení rezervace, vyúčtování pobytu |
-| T3 | OTA kanály → Channel Manager | Online rezervace (Booking.com, Expedia) |
-| T4 | Channel Manager → OTA kanály | Dostupnost pokojů, ceny |
-| T5 | Channel Manager → PMS | Přijaté online rezervace |
-| T6 | PMS → Účetní systém | Fakturační data (manuální export) |
-| T7 | Účetní systém → Finanční úřad | Daňová přiznání, účetní výkazy |
-| T8 | Vedení společnosti → Excel tabulky | Požadavky na reporty |
-| T9 | Excel tabulky → Vedení společnosti | Ad-hoc sestavy o hostech a obsazenosti |
-| T10 | Marketing → Outlook | Manuální rozesílání kampaní |
-| T11 | Firemní klienti → Obchodní odd. | Poptávky na konference a firemní akce |
-| T12 | Obchodní odd. → Firemní klienti | Cenové nabídky (manuálně) |
-
-*Tabulka 4: Informační toky – stávající situace*
 
 ## **5.3 Stanovení cílů informační strategie** {#5.3-stanovení-cílů-informační-strategie}
 
@@ -317,7 +310,7 @@ Na základě analýzy stávajícího stavu IS/IT a globálních cílů podniku (
 | 5. Centrální databáze hostů |  | ✓ |  | ✓ |
 | 6. Reportingový nástroj | ✓ | ✓ | ✓ |  |
 
-*Tabulka 5: Vztah cílů informační strategie k dimenzím EA*
+*Tabulka 4: Vztah cílů informační strategie k dimenzím EA*
 
 ## **5.4 Kritické faktory úspěchu (CSF)** {#5.4-csf}
 
@@ -341,7 +334,7 @@ Tabulka kritických faktorů úspěchu hodnotí klíčová kritéria, která mus
 | 9 | Zvýšení míry opakovaných návštěv |  |  | ✓ | 7 | 2 | 2 |
 | 10 | Akceptace systému vedením hotelů | ✓ |  | ✓ | 8 | 3 | 4 |
 
-*Tabulka 6: Kritické faktory úspěchu (CSF)*
+*Tabulka 5: Kritické faktory úspěchu (CSF)*
 
 Nejkritičtějšími faktory jsou **úspěšná migrace dat** (CSF 3), **integrace s PMS** (CSF 4) a **zajištění bezpečnosti dat** (CSF 8), které mají nejvyšší závažnost i míru ohrožení. Tyto faktory přímo ovlivňují, zda nový CRM systém bude schopen plnit svou funkci centrální zákaznické databáze a zda bude v souladu s požadavky GDPR.
 
@@ -398,7 +391,7 @@ Katalog obsahuje funkční (F) a nefunkční (N) požadavky na integraci CRM sys
 | F13 | Správa souhlasů GDPR | CRM umožní evidovat a spravovat souhlasy zákazníků se zpracováním osobních údajů a marketingovou komunikací | Recepční, IT správce | 4 | Kritická | F01 |
 | F14 | Záznam komunikace s hostem | CRM umožní zaznamenat veškerou komunikaci s hostem (e-maily, telefonáty, poznámky) do jeho profilu | Recepční, Obchodník | 4 | Střední | F01 |
 
-*Tabulka 7: Funkční požadavky*
+*Tabulka 6: Funkční požadavky*
 
 ### **Nefunkční požadavky**
 
@@ -415,7 +408,7 @@ Katalog obsahuje funkční (F) a nefunkční (N) požadavky na integraci CRM sys
 | N09 | Zálohování dat | Zákaznická data musí být automaticky zálohována minimálně jednou denně s možností obnovy do 4 hodin (RTO) | IT správce | 5 | Vysoká | — |
 | N10 | Vícejazyčnost | Uživatelské rozhraní CRM musí být dostupné v českém a anglickém jazyce | IT správce | 2 | Nízká | — |
 
-*Tabulka 8: Nefunkční požadavky*
+*Tabulka 7: Nefunkční požadavky*
 
 7. # **Marek (kafonmar) \- Datová architektura – návrh nových informačních toků: 1\) nový kontextový diagram, 2\) DFD první úrovně (DFD) a 3\) návrh struktury databáze (ERD).** {#marek-(kafonmar)---datová-architektura-–-návrh-nových-informačních-toků:-1)-nový-kontextový-diagram,-2)-dfd-první-úrovně-(dfd)-a-3)-návrh-struktury-databáze-(erd).}
 
