@@ -220,3 +220,15 @@ Tato tabulka z kap. 5.3 ukazuje, které kapitoly (dimenze) se dotýkají kteréh
 - Požadavky F01–F14 a N01–N10 jsou referenční – odkazujte na ně ve svých kapitolách
 - Číslování tabulek pokračuje od **Tabulka 8** (aktuálně máme 1–7)
 - Číslování obrázků pokračuje od **Obrázek 4** (aktuálně máme 1–3)
+
+---
+
+## Shrnutí – kdo co využívá
+
+**Kapitola 7 – Marek (Datová architektura):** Vychází ze stávajících systémů definovaných v kap. 5.1 (PMS Horesplus, SiteMinder, Money S5) a z kontextového diagramu stávající situace (kap. 5.2). Nový kontextový diagram musí ukázat cílový stav se Salesforce CRM uprostřed. DFD rozkládá procesy navržené v BPMN (kap. 6.1) na datové toky. ERD vychází přímo z funkčních požadavků F01–F14 (kap. 6.2) – každý požadavek implikuje datové entity, které je potřeba namodelovat.
+
+**Kapitola 8 – Alex (Aplikační architektura):** Diagram tříd musí být konzistentní s ERD od Marka (kap. 7) – stejné entity, jen v objektové notaci s metodami. Use Case diagram vychází z funkčních požadavků F01–F14 (kap. 6.2), kde každý požadavek odpovídá jednomu nebo více případům užití. Aktéři v Use Case odpovídají účastníkům BPMN procesu z kap. 6.1 (Recepční, Obchodník, Marketing, Manažer, IT správce).
+
+**Kapitola 9 – Sergiu (Technologická architektura):** Tabulky HW/SW vybavení vychází z nefunkčních požadavků N01–N10 (kap. 6.2), které definují konkrétní technické parametry (dostupnost, odezva, šifrování, MFA, kapacita, API). Bezpečnostní požadavky navazují na CSF 8 – GDPR (kap. 5.4) a požadavek F13/N03. Školení dimenzuje podle aktérů a jejich počtů definovaných v katalogu požadavků.
+
+**Kapitola 10 – Sváťa (Integrační plán):** Harmonogram musí pokrýt všechny fáze od analýzy po plný provoz a reflektovat kritické faktory CSF 1 (včasné dodání) a CSF 2 (rozpočet) z kap. 5.4. Finanční náklady se skládají z licencí Salesforce a nákladů na HW/SW z kap. 9, implementačních prací Seyforu a školení z kap. 9.6. Ganttův diagram by měl zohlednit závislosti – např. migrace dat (CSF 3) nemůže začít před dokončením integrací.
