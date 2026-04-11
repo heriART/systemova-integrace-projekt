@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kontextový diagram – Aurora Hotels CRM integrace</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f5f5;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    header {
+      background: #2c3e50;
+      color: white;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    header .subtitle {
+      font-size: 12px;
+      opacity: 0.8;
+      margin-top: 2px;
+    }
+    nav {
+      display: flex;
+      gap: 8px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 6px 14px;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 4px;
+      font-size: 13px;
+      transition: background 0.2s;
+    }
+    nav a:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    #viewer-frame {
+      flex: 1;
+      width: 100%;
+      border: none;
+      background: white;
+    }
+    #info {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(255,255,255,0.95);
+      padding: 10px 14px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #555;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      max-width: 400px;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Kontextový diagram – Stávající situace IS/IT</h1>
+      <div class="subtitle">Aurora Hotels a.s. · Kapitola 5 Informační strategie</div>
+    </div>
+    <nav>
+      <a href="index.html">← Zpět na rozcestník</a>
+    </nav>
+  </header>
+  <iframe id="viewer-frame" src="about:blank"></iframe>
+  <div id="info">
+    <strong>Kontextový diagram stávajícího stavu</strong><br>
+    Vztahy IS Aurora Hotels k okolí před integrací CRM Salesforce.
+  </div>
+
+  <script>
+    // Raw GitHub URL to the .drawio file (served from GitHub Pages docs/diagrams/)
+    // Use relative location so the viewer works both locally and on GitHub Pages
+    const drawioFileUrl = new URL('diagrams/kontextovy-diagram-stavajici-v2.drawio', window.location.href).href;
+
+    // viewer.diagrams.net embed URL
+    // Params: lightbox=1 (clean UI), highlight, nav=1 (navigation), title=filename
+    const viewerUrl = 'https://viewer.diagrams.net/?lightbox=1&highlight=0000ff&nav=1&title=kontextovy-diagram-stavajici-v2.drawio#U'
+      + encodeURIComponent(drawioFileUrl);
+
+    document.getElementById('viewer-frame').src = viewerUrl;
+  </script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<mxfile host="app.diagrams.net" agent="Claude">
+  <diagram id="ctx-stavajici-v2" name="Kontextový diagram – stávající situace v2">
+    <mxGraphModel dx="1359" dy="714" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="is" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;verticalAlign=middle;aspect=fixed;" value="IS&#xa;Aurora Hotels a.s." vertex="1">
+          <mxGeometry height="200" width="200" x="440" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="host" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;" value="Host&#xa;(individuální / firemní)" vertex="1">
+          <mxGeometry height="60" width="180" x="100" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="ota" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;" value="OTA kanály&#xa;(Booking.com, Expedia)" vertex="1">
+          <mxGeometry height="60" width="190" x="445" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="chm" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;" value="Channel Manager&#xa;(SiteMinder)" vertex="1">
+          <mxGeometry height="60" width="170" x="820" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="firmy" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;" value="Firemní klienti" vertex="1">
+          <mxGeometry height="60" width="170" x="880" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="vedeni" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;" value="Vedení společnosti" vertex="1">
+          <mxGeometry height="60" width="170" x="810" y="630" as="geometry" />
+        </mxCell>
+        <mxCell id="ucetni" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;" value="Účetní systém&#xa;(Money S5)" vertex="1">
+          <mxGeometry height="60" width="190" x="380" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="fu" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;" value="Finanční úřad" vertex="1">
+          <mxGeometry height="60" width="180" x="70" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="web" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;" value="Webové stránky&#xa;Aurora Hotels" vertex="1">
+          <mxGeometry height="60" width="180" x="70" y="384" as="geometry" />
+        </mxCell>
+        <mxCell id="t1" edge="1" parent="1" source="host" style="endArrow=classic;html=1;fontSize=9;rounded=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="is" value="Osobní údaje, požadavky na rezervaci">
+          <mxGeometry relative="1" x="0.1" y="10" as="geometry">
+            <Array as="points">
+              <mxPoint x="380" y="230" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t2" edge="1" parent="1" source="is" style="endArrow=classic;html=1;fontSize=9;rounded=1;dashed=1;exitX=0;exitY=0;exitDx=0;exitDy=0;" target="host" value="Potvrzení rezervace, vyúčtování">
+          <mxGeometry relative="1" x="0.1" y="-10" as="geometry">
+            <Array as="points">
+              <mxPoint x="320" y="310" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t3" edge="1" parent="1" source="ota" style="endArrow=classic;html=1;fontSize=9;rounded=1;" target="chm" value="Online rezervace">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="t4" edge="1" parent="1" source="chm" style="endArrow=classic;html=1;fontSize=9;rounded=1;dashed=1;" target="ota" value="Dostupnost pokojů, ceny">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="t5" edge="1" parent="1" source="chm" style="endArrow=classic;html=1;fontSize=9;rounded=1;" target="is" value="Přijaté online rezervace">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="t_ota_is" edge="1" parent="1" source="ota" style="endArrow=classic;html=1;fontSize=9;rounded=1;dashed=1;" target="is" value="Data o rezervacích&#xa;(přes Channel Manager)">
+          <mxGeometry relative="1" x="-0.2632" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tw" edge="1" parent="1" source="web" style="endArrow=classic;html=1;fontSize=9;rounded=1;" target="is" value="Webové rezervace">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="340" y="380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tw2" edge="1" parent="1" source="is" style="endArrow=classic;html=1;fontSize=9;rounded=1;dashed=1;" target="web" value="Informace o dostupnosti">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="340" y="450" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t11" edge="1" parent="1" source="firmy" style="endArrow=classic;html=1;fontSize=9;rounded=1;" target="is" value="Poptávky na konference,&#xa;firemní akce">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="760" y="380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t12" edge="1" parent="1" source="is" style="endArrow=classic;html=1;fontSize=9;rounded=1;dashed=1;" target="firmy" value="Cenové nabídky,&#xa;potvrzení akcí">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="760" y="440" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t6" edge="1" parent="1" source="is" style="endArrow=classic;html=1;fontSize=9;rounded=1;" target="ucetni" value="Fakturační data&#xa;(manuální export)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="t7" edge="1" parent="1" source="ucetni" style="endArrow=classic;html=1;fontSize=9;rounded=1;" target="fu" value="Daňová přiznání,&#xa;účetní výkazy">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="t8" edge="1" parent="1" source="vedeni" style="endArrow=classic;html=1;fontSize=9;rounded=1;curved=0;" target="is" value="Požadavky na reporty">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="710" y="570" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t9" edge="1" parent="1" source="is" style="endArrow=classic;html=1;fontSize=9;rounded=1;dashed=1;" target="vedeni" value="Ad-hoc sestavy&#xa;(Excel)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="770" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

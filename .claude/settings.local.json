@@ -6,7 +6,13 @@
       "Bash(npx --yes bpmn-to-image --no-footer \"bpmn-rezervace-checkin-as-is.bpmn;bpmn-as-is.png\")",
       "Bash(mkdir -p docs/diagrams)",
       "Bash(cp data/diagrams/bpmn-rezervace-checkin-as-is.bpmn docs/diagrams/)",
-      "Bash(cp data/diagrams/bpmn-rezervace-checkin-to-be.bpmn docs/diagrams/)"
+      "Bash(cp data/diagrams/bpmn-rezervace-checkin-to-be.bpmn docs/diagrams/)",
+      "Bash(ls -la data/diagrams/kontextovy*)",
+      "Bash(curl -s -o /dev/null -w \"drawio-viewer.html: %{http_code}\\\\n\" http://localhost:8766/drawio-viewer.html)",
+      "Bash(curl -s -o /dev/null -w \"kontextovy.drawio: %{http_code}\\\\n\" http://localhost:8766/diagrams/kontextovy-diagram-stavajici-v2.drawio)",
+      "Bash(curl -s -o /dev/null -w \"index.html: %{http_code}\\\\n\" http://localhost:8766/index.html)",
+      "Bash(kill %1)",
+      "Bash(jobs -l)"
     ]
   }
 }
