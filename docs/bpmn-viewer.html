@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BPMN Viewer – Aurora Hotels CRM integrace</title>
+  <link rel="stylesheet" href="https://unpkg.com/bpmn-js@17.9.2/dist/assets/diagram-js.css">
+  <link rel="stylesheet" href="https://unpkg.com/bpmn-js@17.9.2/dist/assets/bpmn-js.css">
+  <link rel="stylesheet" href="https://unpkg.com/bpmn-js@17.9.2/dist/assets/bpmn-font/css/bpmn.css">
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f5f5;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    header {
+      background: #2c3e50;
+      color: white;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    header .subtitle {
+      font-size: 12px;
+      opacity: 0.8;
+      margin-top: 2px;
+    }
+    nav {
+      display: flex;
+      gap: 8px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 6px 14px;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 4px;
+      font-size: 13px;
+      transition: background 0.2s;
+    }
+    nav a:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    nav a.active {
+      background: #3498db;
+      border-color: #3498db;
+    }
+    #canvas {
+      flex: 1;
+      background: white;
+      position: relative;
+      overflow: hidden;
+    }
+    #controls {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      z-index: 10;
+    }
+    #controls button {
+      width: 40px;
+      height: 40px;
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 18px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: background 0.2s;
+    }
+    #controls button:hover {
+      background: #f0f0f0;
+    }
+    #info {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(255,255,255,0.95);
+      padding: 10px 14px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #555;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      max-width: 400px;
+    }
+    #error {
+      padding: 30px;
+      color: #c0392b;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>BPMN Viewer – Integrace Salesforce CRM</h1>
+      <div class="subtitle">Aurora Hotels a.s. · Kapitola 6 Business architektura</div>
+    </div>
+    <nav>
+      <a href="?file=as-is" id="nav-as-is">AS-IS (stávající)</a>
+      <a href="?file=to-be" id="nav-to-be">TO-BE (cílový)</a>
+    </nav>
+  </header>
+  <div id="canvas"></div>
+  <div id="controls">
+    <button onclick="zoomIn()" title="Přiblížit">+</button>
+    <button onclick="zoomOut()" title="Oddálit">−</button>
+    <button onclick="zoomReset()" title="Původní velikost">⟲</button>
+    <button onclick="zoomFit()" title="Přizpůsobit velikosti">⛶</button>
+  </div>
+  <div id="info"></div>
+
+  <script src="https://unpkg.com/bpmn-js@17.9.2/dist/bpmn-navigated-viewer.development.js"></script>
+  <script>
+    const FILES = {
+      'as-is': {
+        path: 'diagrams/bpmn-rezervace-checkin-as-is.bpmn',
+        title: 'AS-IS – Stávající stav procesu (bez CRM)',
+        description: 'Proces rezervace a check-in hosta bez centrálního CRM systému. Data jsou roztříštěna v Excel tabulkách a lokálních instancích PMS Horesplus.'
+      },
+      'to-be': {
+        path: 'diagrams/bpmn-rezervace-checkin-to-be.bpmn',
+        title: 'TO-BE – Cílový stav procesu (se Salesforce CRM)',
+        description: 'Proces po integraci Salesforce CRM jako centrálního zdroje zákaznických dat. Zahrnuje automatickou synchronizaci PMS↔CRM a Channel Manager↔CRM.'
+      }
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const fileKey = params.get('file') || 'to-be';
+    const fileConfig = FILES[fileKey] || FILES['to-be'];
+
+    document.getElementById('nav-' + fileKey)?.classList.add('active');
+    document.getElementById('info').innerHTML =
+      '<strong>' + fileConfig.title + '</strong><br>' + fileConfig.description;
+
+    const viewer = new BpmnJS({
+      container: '#canvas'
+    });
+
+    async function loadDiagram() {
+      try {
+        const response = await fetch(fileConfig.path);
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        const xml = await response.text();
+        await viewer.importXML(xml);
+        viewer.get('canvas').zoom('fit-viewport');
+      } catch (err) {
+        document.getElementById('canvas').innerHTML =
+          '<div id="error"><h2>Chyba při načítání diagramu</h2><p>' + err.message + '</p><p>Cesta: ' + fileConfig.path + '</p></div>';
+      }
+    }
+
+    function zoomIn()  { viewer.get('zoomScroll').stepZoom(1); }
+    function zoomOut() { viewer.get('zoomScroll').stepZoom(-1); }
+    function zoomReset() { viewer.get('canvas').zoom(1); }
+    function zoomFit()   { viewer.get('canvas').zoom('fit-viewport'); }
+
+    loadDiagram();
+  </script>
+</body>
+</html>

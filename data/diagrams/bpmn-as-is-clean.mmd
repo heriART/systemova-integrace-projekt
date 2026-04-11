@@ -1,6 +1,3 @@
----
-title: "BPMN – Správa rezervace a check-in hosta (TO-BE – cílový stav s CRM)"
----
 flowchart TD
     subgraph HOST["Host"]
         H_Start(("Potřeba\nubytování"))
@@ -11,7 +8,6 @@ flowchart TD
         H_Checkin["Příjezd\na check-in"]
         H_Pobyt["Pobyt\nv hotelu"]
         H_Checkout["Check-out"]
-        H_Email["Přijetí automatického\npost-pobytového e-mailu"]
         H_End(("Konec"))
 
         H_Start --> H_GW
@@ -22,8 +18,7 @@ flowchart TD
         H_Potvrzeni --> H_Checkin
         H_Checkin --> H_Pobyt
         H_Pobyt --> H_Checkout
-        H_Checkout --> H_Email
-        H_Email --> H_End
+        H_Checkout --> H_End
     end
 
     subgraph RECEPCE["Recepce"]
@@ -31,73 +26,58 @@ flowchart TD
         R_Overeni["Ověření dostupnosti\npokoje v PMS"]
         R_GW_Dost{"Pokoj\ndostupný?"}
         R_Alternativa["Nabídka alternativního\ntermínu/pokoje"]
-        R_VyhledaniCRM["Vyhledání hosta\nv CRM Salesforce\n(F04)"]
-        R_GW_Host{"Host nalezen\nv CRM?"}
-        R_NovyProfil["Vytvoření nového\nprofilu v CRM\n(F01, F13 – GDPR)"]
-        R_Aktualizace["Zobrazení profilu:\nhistorie pobytů (F02),\npreference (F03),\nvěrnostní úroveň (F12)"]
+        R_Excel["Manuální dohledání\nhosta v Excelu\n(lokální tabulky)"]
+        R_GW_Host{"Host nalezen\nv Excelu?"}
+        R_NovyZaznam["Ruční zapsání\nnového hosta\ndo Excel tabulky"]
+        R_BezHistorie["Potvrzení bez znalosti\nhistorie a preferencí"]
         R_Potvrzeni["Potvrzení rezervace\nhostovi"]
-        R_Checkin["Check-in hosta\ns využitím CRM profilu\na preferencí"]
+        R_Checkin["Check-in hosta\n(bez profilu,\nbez preferencí)"]
         R_Checkout["Check-out hosta,\nvyúčtování"]
-        R_Komunikace["Záznam komunikace\ndo CRM (F14)"]
+        R_ManualniEmail["Manuální odeslání\nděkovného e-mailu\n(Outlook)"]
 
         R_Prijem --> R_Overeni
         R_Overeni --> R_GW_Dost
         R_GW_Dost -- "Ne" --> R_Alternativa
         R_Alternativa --> R_Overeni
-        R_GW_Dost -- "Ano" --> R_VyhledaniCRM
-        R_VyhledaniCRM --> R_GW_Host
-        R_GW_Host -- "Ne – nový host" --> R_NovyProfil
-        R_GW_Host -- "Ano – existující" --> R_Aktualizace
-        R_NovyProfil --> R_Potvrzeni
-        R_Aktualizace --> R_Potvrzeni
-        R_Potvrzeni --> R_Komunikace
-        R_Komunikace --> R_Checkin
+        R_GW_Dost -- "Ano" --> R_Excel
+        R_Excel --> R_GW_Host
+        R_GW_Host -- "Ne" --> R_NovyZaznam
+        R_GW_Host -- "Ano" --> R_BezHistorie
+        R_NovyZaznam --> R_Potvrzeni
+        R_BezHistorie --> R_Potvrzeni
+        R_Potvrzeni --> R_Checkin
         R_Checkin --> R_Checkout
+        R_Checkout --> R_ManualniEmail
     end
 
-    subgraph PMS["PMS Horesplus"]
-        P_Overeni["Kontrola dostupnosti\npokojů"]
+    subgraph PMS["PMS Horesplus (lokální instance)"]
+        P_Overeni["Kontrola dostupnosti\npokojů (pouze\nlokální hotel)"]
         P_Zaznam["Záznam rezervace\ndo PMS"]
         P_Checkout["Zpracování check-outu,\nvyúčtování"]
-        P_Sync["Automatická synchronizace\ndat o pobytu do CRM\n(F09)"]
+        P_Export["Manuální export dat\ndo účetního systému\n(1× denně)"]
 
-        P_Checkout --> P_Sync
-    end
-
-    subgraph CRM["CRM Salesforce"]
-        C_Vyhledani["Vyhledání / zobrazení\nprofilu hosta"]
-        C_Sync["Příjem synchronizovaných\ndat z PMS (F09)"]
-        C_SyncCHM["Příjem dat z Channel\nManageru (F10)"]
-        C_Kampan["Automatická post-pobytová\nkampaň – Marketing Cloud\n(F07, F08)"]
-
-        C_Sync --> C_Kampan
-        C_SyncCHM --> C_Vyhledani
+        P_Checkout --> P_Export
     end
 
     subgraph CHM["Channel Manager (SiteMinder)"]
         CM_Prijem["Příjem online\nrezervace (web/OTA)"]
-        CM_Predani["Předání rezervace\ndo PMS a CRM"]
+        CM_Predani["Předání rezervace\ndo PMS"]
 
         CM_Prijem --> CM_Predani
     end
 
-    %% Mezilanové toky (message flows)
+    %% Mezilanové toky
     H_Pozadavek -.-> R_Prijem
     H_Online -.-> CM_Prijem
     CM_Predani -.-> R_Prijem
-    CM_Predani -.-> C_SyncCHM
     R_Overeni -.-> P_Overeni
     P_Overeni -.-> R_GW_Dost
-    R_VyhledaniCRM -.-> C_Vyhledani
-    C_Vyhledani -.-> R_GW_Host
     R_Potvrzeni -.-> P_Zaznam
     R_Potvrzeni -.-> H_Potvrzeni
     R_Checkout -.-> P_Checkout
-    P_Sync -.-> C_Sync
-    C_Kampan -.-> H_Email
+    R_ManualniEmail -.-> H_End
 
     style HOST fill:#fff2cc,stroke:#d6b656
     style RECEPCE fill:#dae8fc,stroke:#6c8ebf
     style PMS fill:#d5e8d4,stroke:#82b366
-    style CRM fill:#e1d5e7,stroke:#9673a6
     style CHM fill:#f8cecc,stroke:#b85450

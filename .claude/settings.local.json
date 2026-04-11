@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx --yes bpmn-to-image --no-footer \"bpmn-rezervace-checkin-to-be.bpmn;bpmn-to-be.png\")",
+      "Bash(pandoc \"projekt-petis-verze.md\" -o \"projekt-petis-verze-updated.docx\" --from=markdown --to=docx --resource-path=.)",
+      "Bash(npx --yes bpmn-to-image --no-footer \"bpmn-rezervace-checkin-as-is.bpmn;bpmn-as-is.png\")",
+      "Bash(mkdir -p docs/diagrams)",
+      "Bash(cp data/diagrams/bpmn-rezervace-checkin-as-is.bpmn docs/diagrams/)",
+      "Bash(cp data/diagrams/bpmn-rezervace-checkin-to-be.bpmn docs/diagrams/)"
+    ]
+  }
+}

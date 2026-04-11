@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Integrace Salesforce CRM – Aurora Hotels a.s.</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      color: #2c3e50;
+      line-height: 1.6;
+    }
+    h1 {
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+    }
+    h2 {
+      color: #34495e;
+      margin-top: 30px;
+    }
+    .subtitle {
+      color: #7f8c8d;
+      font-size: 14px;
+      margin-top: -5px;
+    }
+    .diagram-card {
+      display: block;
+      padding: 20px;
+      margin: 15px 0;
+      background: #f8f9fa;
+      border: 1px solid #e1e4e8;
+      border-left: 4px solid #3498db;
+      border-radius: 4px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s;
+    }
+    .diagram-card:hover {
+      background: #e8f4f8;
+      border-left-color: #2980b9;
+      transform: translateX(2px);
+    }
+    .diagram-card h3 {
+      margin: 0 0 6px 0;
+      color: #2c3e50;
+    }
+    .diagram-card p {
+      margin: 0;
+      font-size: 14px;
+      color: #555;
+    }
+    .meta {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #e1e4e8;
+      font-size: 13px;
+      color: #7f8c8d;
+    }
+    a { color: #3498db; }
+  </style>
+</head>
+<body>
+  <h1>Integrace Salesforce CRM do sítě Aurora Hotels a.s.</h1>
+  <p class="subtitle">Semestrální projekt · Systémová integrace · ČZU v Praze</p>
+
+  <h2>BPMN diagramy – Kapitola 6 Business architektura</h2>
+  <p>Proces „Správa rezervace a check-in hosta" je modelován ve dvou variantách pro porovnání stavu před a po integraci CRM systému.</p>
+
+  <a href="bpmn-viewer.html?file=as-is" class="diagram-card">
+    <h3>📋 AS-IS – Stávající stav (bez CRM)</h3>
+    <p>Proces rezervace a check-in hosta před integrací. Data roztříštěna v Excel tabulkách a lokálních instancích PMS Horesplus, manuální komunikace přes Outlook.</p>
+  </a>
+
+  <a href="bpmn-viewer.html?file=to-be" class="diagram-card">
+    <h3>✨ TO-BE – Cílový stav (se Salesforce CRM)</h3>
+    <p>Proces po integraci Salesforce CRM jako centrálního zdroje zákaznických dat. Automatická synchronizace PMS↔CRM (F09) a Channel Manager↔CRM (F10), automatizované marketingové kampaně (F08).</p>
+  </a>
+
+  <div class="meta">
+    <p><strong>Tým:</strong> Herian Petr · Herian Ondřej · Vácha Svatopluk · Kafoněk Marek · Kroča Alex · Nica Sergiu</p>
+    <p><strong>Zdrojový kód:</strong> <a href="https://github.com/heriART/systemova-integrace-projekt">github.com/heriART/systemova-integrace-projekt</a></p>
+  </div>
+</body>
+</html>

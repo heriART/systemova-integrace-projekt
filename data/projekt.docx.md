@@ -340,33 +340,98 @@ Nejkritičtějšími faktory jsou **úspěšná migrace dat** (CSF 3), **integra
 
 6. # **Business architektura** {#business-architektura}
 
+Business architektura popisuje klíčové podnikové procesy, které budou ovlivněny integrací CRM systému Salesforce do prostředí Aurora Hotels a.s. Cílem této kapitoly je identifikovat a namodelovat podnikový proces, který je integrací nejvíce dotčen, a definovat katalog uživatelských požadavků na nový systém.
+
+Pro modelování procesů je použita notace **BPMN 2.0** (Business Process Model and Notation), která umožňuje přehledně znázornit tok činností, rozhodovací body a interakce mezi účastníky procesu. Proces je modelován ve dvou variantách – **stávající stav (AS-IS)** bez CRM systému a **cílový stav (TO-BE)** po integraci Salesforce CRM – aby byl zřetelný přínos integrace.
+
+Katalog uživatelských požadavků (kap. 6.2) vychází z cílů informační strategie (kap. 5) a definuje funkční a nefunkční požadavky, na které navazují další vrstvy podnikové architektury – datová (kap. 7), aplikační (kap. 8) a technologická (kap. 9).
+
 ## **6.1 Výběr a návrh podnikového procesu (BPMN)** {#6.1-bpmn}
 
-Pro modelování byl zvolen proces **„Správa rezervace a check-in hosta"**, protože se jedná o klíčový podnikový proces, který přímo souvisí s integrací CRM systému Salesforce. Proces zahrnuje příjem rezervace, ověření dostupnosti, vytvoření/aktualizaci zákaznického profilu v CRM, samotný check-in a následnou post-pobytovou komunikaci. Právě tento proces nejlépe ilustruje přínos centrálního CRM – umožňuje personalizaci služeb na základě historie hosta a automatizované follow-up kampaně.
+Pro modelování byl zvolen proces **„Správa rezervace a check-in hosta"**, protože se jedná o klíčový podnikový proces, který je integrací CRM systému Salesforce nejvíce dotčen. Tento proces pokrývá celý životní cyklus interakce s hostem – od přijetí rezervace přes check-in a pobyt až po post-pobytovou komunikaci – a přímo se dotýká všech šesti cílů informační strategie definovaných v kapitole 5.
 
-**Popis procesu:**
+Proces je namodelován ve dvou variantách: **stávající stav (AS-IS)** zachycuje současný průběh procesu bez CRM systému a **cílový stav (TO-BE)** ukazuje proces po integraci Salesforce CRM. Srovnání obou variant umožňuje identifikovat konkrétní přínosy integrace.
 
-Proces začíná přijetím požadavku na rezervaci, který může přijít třemi kanály: přímo od hosta (telefon, e-mail), přes webové stránky nebo přes OTA kanál (Booking.com, Expedia). V případě online kanálů je rezervace automaticky přenesena přes Channel Manager do PMS.
+### **6.1.1 Stávající stav procesu (AS-IS)** {#6.1.1-as-is}
 
-Po přijetí rezervace recepční ověří dostupnost pokoje v PMS. Pokud pokoj není dostupný, nabídne hostovi alternativní termín nebo typ pokoje. Po potvrzení dostupnosti systém vyhledá hosta v CRM Salesforce:
+V současném stavu probíhá proces rezervace a check-in hosta bez centrálního CRM systému. Každý hotel provozuje **vlastní lokální instanci PMS Horesplus** s izolovanou databází – data o hostech se mezi hotely nesdílí. Informace o zákaznících (VIP hosté, firemní klienti) jsou vedeny nekoordinovaně v **Excel tabulkách** na jednotlivých hotelech.
 
-* **Existující host** – CRM zobrazí jeho profil s historií pobytů, preferencemi a poznámkami z předchozích návštěv. Recepční může přizpůsobit nabídku (např. preferovaný typ pokoje, patro, speciální požadavky).
-* **Nový host** – v CRM je vytvořen nový zákaznický profil s kontaktními údaji a údaji o rezervaci.
+**Popis stávajícího procesu:**
 
-Následuje potvrzení rezervace hostovi a záznam do PMS. V den příjezdu probíhá check-in, při kterém recepční vidí v CRM kompletní profil hosta. Po ukončení pobytu (check-out) se údaje o pobytu synchronizují z PMS do CRM a systém automaticky spouští post-pobytovou komunikaci – poděkování, žádost o hodnocení a případná personalizovaná nabídka na další pobyt.
+Proces začíná přijetím požadavku na rezervaci, který může přijít dvěma cestami: přímo od hosta (telefon, e-mail) nebo přes online kanál (Booking.com, Expedia, webové stránky). V případě online rezervací Channel Manager SiteMinder předá rezervaci do lokální instance PMS.
 
-**Účastníci procesu (BPMN lanes):**
+Po přijetí rezervace recepční ověří dostupnost pokoje v PMS. Pokud pokoj není dostupný, nabídne hostovi alternativní termín nebo typ pokoje. Po ověření dostupnosti se recepční pokusí **manuálně dohledat hosta v lokálních Excel tabulkách**:
+
+* **Host nalezen v Excelu** – recepční vidí pouze základní údaje (jméno, kontakt), ale nemá k dispozici historii pobytů z jiných hotelů sítě, preference ani předchozí komunikaci. Potvrzení rezervace probíhá bez personalizace.
+* **Host nenalezen** – recepční ručně zapíše nového hosta do Excel tabulky. Neexistuje kontrola, zda host dříve navštívil jiný hotel sítě.
+
+Následuje potvrzení rezervace a check-in, při kterém recepční **nemá k dispozici žádný ucelený profil hosta**. Po check-outu jsou data o pobytu uložena pouze v lokálním PMS a manuálně exportována do účetního systému Money S5 (1× denně). Post-pobytová komunikace (děkovný e-mail) probíhá **manuálně přes Outlook**, pokud na ni recepční nezapomene – neexistuje žádná automatizace.
+
+**Účastníci procesu (AS-IS):**
+
+* **Host** – iniciátor procesu, příjemce služeb
+* **Recepce** – zpracování rezervace, check-in, check-out, manuální evidence
+* **PMS Horesplus (lokální instance)** – správa pokojů, dostupnost, vyúčtování (pouze daný hotel)
+* **Channel Manager (SiteMinder)** – příjem online rezervací
+
+*Obrázek 3: BPMN diagram – Správa rezervace a check-in hosta (AS-IS – stávající stav)*
+
+<!-- AS-IS BPMN diagram: data/diagrams/bpmn-rezervace-checkin-as-is.mmd -->
+
+**Identifikované nedostatky stávajícího procesu:**
+
+| č. | Nedostatek | Dopad |
+| :---: | :--- | :--- |
+| 1 | Žádná centrální evidence hostů – data roztříštěna v Excel tabulkách a lokálních PMS | Recepční neví, že host navštívil jiný hotel sítě; nelze nabídnout personalizované služby |
+| 2 | Absence zákaznického profilu s historií a preferencemi | Při check-inu recepční nezná preference hosta (typ pokoje, patro, stravování) |
+| 3 | Manuální post-pobytová komunikace přes Outlook | Follow-up e-maily jsou nesystematické, často se neodešlou; žádné automatické kampaně |
+| 4 | Data z Channel Manageru nekončí v centrálním systému | Online rezervace nejsou provázány se zákaznickými profily |
+| 5 | Žádná segmentace zákazníků ani reporting napříč hotely | Vedení nemá přehled o zákaznické základně celé sítě |
+| 6 | Firemní klienti evidováni lokálně | Obchodníci nemají přehled o celkovém vztahu s firmou napříč hotely |
+
+### **6.1.2 Cílový stav procesu (TO-BE)** {#6.1.2-to-be}
+
+Po integraci Salesforce CRM se proces výrazně mění díky zavedení **centrálního zákaznického profilu** sdíleného napříč všemi hotely sítě. CRM systém se stává ústředním prvkem procesu – slouží jako jediný zdroj pravdy o zákaznících a umožňuje automatizaci dosud manuálních činností.
+
+**Popis cílového procesu:**
+
+Proces začíná stejně jako ve stávajícím stavu – přijetím požadavku na rezervaci přímým kontaktem nebo přes online kanál. Channel Manager SiteMinder předá online rezervaci do PMS a současně se data o rezervaci **automaticky synchronizují do CRM Salesforce** (požadavek F10).
+
+Po ověření dostupnosti pokoje v PMS recepční **vyhledá hosta v CRM Salesforce** (požadavek F04):
+
+* **Existující host** – CRM zobrazí kompletní profil s historií pobytů **napříč všemi hotely sítě** (F02), preferencemi (F03) a poznámkami z předchozích návštěv. Recepční může přizpůsobit nabídku – např. preferovaný typ pokoje, patro, speciální požadavky. U firemního klienta zobrazí CRM i údaje o firmě a rámcovou smlouvu (F05).
+* **Nový host** – v CRM je vytvořen nový zákaznický profil s kontaktními údaji, souhlasem GDPR (F13) a údaji o rezervaci (F01).
+
+Následuje potvrzení rezervace hostovi a záznam do PMS. Data se **obousměrně synchronizují mezi PMS a CRM** (F09). V den příjezdu probíhá check-in, při kterém recepční vidí v CRM kompletní profil hosta včetně preferencí a věrnostní úrovně (F12).
+
+Po check-outu se údaje o pobytu automaticky synchronizují z PMS do CRM a systém **automaticky spouští post-pobytovou komunikaci** přes Salesforce Marketing Cloud (F08) – poděkování za pobyt, žádost o hodnocení a personalizovaná nabídka na další pobyt na základě segmentace (F07). Veškerá komunikace s hostem je zaznamenána v CRM (F14).
+
+**Účastníci procesu (TO-BE):**
 
 * **Host** – iniciátor procesu, příjemce služeb
 * **Recepce** – zpracování rezervace, check-in, check-out
 * **PMS Horesplus** – správa pokojů, dostupnost, vyúčtování
-* **CRM Salesforce** – zákaznický profil, historie, automatizované kampaně
-* **Channel Manager (SiteMinder)** – příjem online rezervací
+* **CRM Salesforce** – centrální zákaznický profil, historie pobytů, preference, automatizované kampaně
+* **Channel Manager (SiteMinder)** – příjem online rezervací, synchronizace s CRM
 
-*Obrázek 3: BPMN diagram – Proces správy rezervace a check-in hosta*
+*Obrázek 4: BPMN diagram – Správa rezervace a check-in hosta (TO-BE – cílový stav s CRM)*
 
-<!-- BPMN diagram je dostupný v souboru data/diagrams/bpmn-rezervace-checkin.bpmn -->
-<!-- Mermaid verze: data/diagrams/bpmn-rezervace-checkin.mmd -->
+<!-- TO-BE BPMN diagram: data/diagrams/bpmn-rezervace-checkin.mmd -->
+
+### **6.1.3 Srovnání AS-IS a TO-BE** {#6.1.3-srovnani}
+
+Následující tabulka shrnuje hlavní rozdíly mezi stávajícím a cílovým stavem procesu a identifikuje konkrétní přínosy integrace CRM systému Salesforce.
+
+| Oblast | AS-IS (stávající stav) | TO-BE (cílový stav s CRM) | Přínos |
+| :--- | :--- | :--- | :--- |
+| Evidence hostů | Excel tabulky, lokální PMS | Centrální profil v Salesforce CRM (F01) | Jednotný pohled na hosta napříč celou sítí |
+| Historie pobytů | Pouze v lokálním PMS daného hotelu | Kompletní historie ze všech hotelů v CRM (F02) | Personalizace služeb, rozpoznání věrného hosta |
+| Preference hosta | Nezaznamenávány systematicky | Evidence v CRM profilu (F03) | Přizpůsobení nabídky při check-inu |
+| Vyhledání hosta | Manuální hledání v Excelu | Okamžité vyhledání v CRM (F04) | Úspora času recepčního, snížení chybovosti |
+| Firemní klienti | Lokální evidence | Centrální správa s obchodními příležitostmi (F05, F06) | Koordinovaný přístup k firemním klientům |
+| Post-pobytová komunikace | Manuální e-mail přes Outlook | Automatická kampaň přes Marketing Cloud (F08) | Systematická komunikace, vyšší míra opakovaných návštěv |
+| Synchronizace dat | Manuální export z PMS 1× denně | Automatická obousměrná synchronizace CRM–PMS (F09) | Aktuální data v reálném čase |
+| Reporting | Žádný centrální reporting | Salesforce Reports & Dashboards (F11) | Podpora rozhodování vedení na základě dat |
 
 ## **6.2 Katalog uživatelských požadavků** {#6.2-katalog-požadavků}
 
@@ -391,7 +456,7 @@ Katalog obsahuje funkční (F) a nefunkční (N) požadavky na integraci CRM sys
 | F13 | Správa souhlasů GDPR | CRM umožní evidovat a spravovat souhlasy zákazníků se zpracováním osobních údajů a marketingovou komunikací | Recepční, IT správce | 4 | Kritická | F01 |
 | F14 | Záznam komunikace s hostem | CRM umožní zaznamenat veškerou komunikaci s hostem (e-maily, telefonáty, poznámky) do jeho profilu | Recepční, Obchodník | 4 | Střední | F01 |
 
-*Tabulka 6: Funkční požadavky*
+*Tabulka 7: Funkční požadavky*
 
 ### **Nefunkční požadavky**
 
@@ -408,7 +473,7 @@ Katalog obsahuje funkční (F) a nefunkční (N) požadavky na integraci CRM sys
 | N09 | Zálohování dat | Zákaznická data musí být automaticky zálohována minimálně jednou denně s možností obnovy do 4 hodin (RTO) | IT správce | 5 | Vysoká | — |
 | N10 | Vícejazyčnost | Uživatelské rozhraní CRM musí být dostupné v českém a anglickém jazyce | IT správce | 2 | Nízká | — |
 
-*Tabulka 7: Nefunkční požadavky*
+*Tabulka 8: Nefunkční požadavky*
 
 7. # **Marek (kafonmar) \- Datová architektura – návrh nových informačních toků: 1\) nový kontextový diagram, 2\) DFD první úrovně (DFD) a 3\) návrh struktury databáze (ERD).** {#marek-(kafonmar)---datová-architektura-–-návrh-nových-informačních-toků:-1)-nový-kontextový-diagram,-2)-dfd-první-úrovně-(dfd)-a-3)-návrh-struktury-databáze-(erd).}
 

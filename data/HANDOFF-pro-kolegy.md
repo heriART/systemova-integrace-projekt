@@ -218,8 +218,8 @@ Tato tabulka z kap. 5.3 ukazuje, které kapitoly (dimenze) se dotýkají kteréh
 - Používejte **stejné názvy systémů**: PMS Horesplus, Money S5, SiteMinder, Salesforce CRM, Salesforce Marketing Cloud
 - Používejte **stejné názvy entit**: Host, Firma, Rezervace, Pobyt, Preference, Obchodní příležitost, Kampaň, Komunikace, Hotel
 - Požadavky F01–F14 a N01–N10 jsou referenční – odkazujte na ně ve svých kapitolách
-- Číslování tabulek pokračuje od **Tabulka 8** (aktuálně máme 1–7)
-- Číslování obrázků pokračuje od **Obrázek 4** (aktuálně máme 1–3)
+- Číslování tabulek pokračuje od **Tabulka 9** (aktuálně máme 1–8: přibyla Tabulka 6 – Nedostatky stávajícího procesu)
+- Číslování obrázků pokračuje od **Obrázek 5** (aktuálně máme 1–4: přibyl Obrázek 3 – AS-IS BPMN a Obrázek 4 – TO-BE BPMN)
 
 ---
 
